@@ -1,0 +1,16 @@
+# Feature PRDs
+
+Create detailed Product Requirements Documents for each feature here.
+
+**Use the `/prd-create` command to generate feature PRDs:**
+
+```bash
+/prd-create user authentication system
+```
+
+**File naming convention**: `feature-name.md`
+
+Examples:
+- `user-authentication.md`
+- `project-management.md`
+- `document-sharing.md`

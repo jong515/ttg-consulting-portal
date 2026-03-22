@@ -1,0 +1,22 @@
+# Architecture Decision Records (ADRs)
+
+Place ADR files here following the template:
+
+```markdown
+# ADR-001: [Title]
+
+**Status**: Accepted | Proposed | Deprecated
+**Date**: YYYY-MM-DD
+**Deciders**: [Names]
+
+## Context
+What is the issue we're facing?
+
+## Decision
+What did we decide to do?
+
+## Consequences
+What are the implications of this decision?
+```
+
+Example: `ADR-001-choose-database-system.md`

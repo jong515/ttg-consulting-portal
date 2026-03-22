@@ -1,0 +1,14 @@
+# API Endpoint Documentation
+
+Document detailed API endpoints here, organized by resource.
+
+**File structure**:
+- `auth.md` - Authentication endpoints
+- `users.md` - User management endpoints
+- `projects.md` - Project endpoints
+- etc.
+
+**Follow API Contract First approach:**
+1. Design OpenAPI specification
+2. Document endpoints here
+3. Implement
