@@ -12,21 +12,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-function Providers({ children }: { children: React.ReactNode }) {
-  if (CLERK_KEY) {
-    return <ClerkProvider publishableKey={CLERK_KEY}>{children}</ClerkProvider>;
+function getClerkKey(): string {
+  const key = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+  if (!key) {
+    throw new Error(
+      'VITE_CLERK_PUBLISHABLE_KEY is not configured. ' +
+        'Add it to .env.local to start the application.',
+    );
   }
-  return <>{children}</>;
+  return key;
 }
+
+const CLERK_KEY = getClerkKey();
 
 export default function App() {
   return (
-    <Providers>
+    <ClerkProvider publishableKey={CLERK_KEY}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </Providers>
+    </ClerkProvider>
   );
 }

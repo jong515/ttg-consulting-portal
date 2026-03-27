@@ -10,7 +10,6 @@ export interface Resource {
   title: string;
   type: ResourceType;
   topic: ContentTopic;
-  topicLabel: string;
   description: string;
   duration: string;
   thumbnailUrl?: string;
@@ -25,10 +24,4 @@ export interface ResourceProgress {
   completed: boolean;
   completedAt?: string;
   lastAccessedAt?: string;
-}
-
-export interface DashboardStats {
-  totalResources: number;
-  completed: number;
-  inProgress: number;
 }

@@ -9,19 +9,11 @@ export function useResourceProgress() {
 
   const { data: progress = [], isLoading, error } = useQuery({
     queryKey: ['resource-progress'],
-    queryFn: async () => {
-      try {
-        return await apiFetch<ResourceProgress[]>(
-          '/resources/progress',
-          getToken,
-        );
-      } catch (err) {
-        console.warn(
-          'Failed to fetch resource progress, using mock data:',
-          err,
-        );
-        return mockProgress;
+    queryFn: () => {
+      if (import.meta.env.DEV && !import.meta.env.VITE_API_BASE_URL) {
+        return Promise.resolve(mockProgress);
       }
+      return apiFetch<ResourceProgress[]>('/resources/progress', getToken);
     },
   });
 

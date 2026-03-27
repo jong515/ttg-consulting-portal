@@ -9,13 +9,11 @@ export function useResources() {
 
   const { data: resources = [], isLoading, error } = useQuery({
     queryKey: ['resources'],
-    queryFn: async () => {
-      try {
-        return await apiFetch<Resource[]>('/resources', getToken);
-      } catch (err) {
-        console.warn('Failed to fetch resources, using mock data:', err);
-        return mockResources;
+    queryFn: () => {
+      if (import.meta.env.DEV && !import.meta.env.VITE_API_BASE_URL) {
+        return Promise.resolve(mockResources);
       }
+      return apiFetch<Resource[]>('/resources', getToken);
     },
   });
 

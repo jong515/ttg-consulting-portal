@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.0
+**Version**: 1.1
 **Component**: Full-stack
-**Status**: Draft
-**Last Updated**: 2026-03-22
+**Status**: In Development
+**Last Updated**: 2026-03-27
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -248,11 +248,12 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 ### Technology Stack
 
 **Frontend:**
-- React 19.1 + TypeScript 5.9
-- Vite 7.3 (SWC bundler)
-- TanStack Router 1.157+ (file-based routing)
-- TanStack Query 5.90+ (server state, stale-while-revalidate)
-- shadcn/ui (new-york) + Tailwind CSS 4.2
+- React 19.1 + TypeScript 5.7
+- Vite 6.x (SWC bundler via @vitejs/plugin-react-swc)
+- TanStack Router 1.114+ (file-based routing via @tanstack/router-plugin)
+- TanStack Query 5.75+ (server state, stale-while-revalidate)
+- shadcn/ui (new-york) + Tailwind CSS 4.1
+- ESLint 9 (flat config) with typescript-eslint, react-hooks, react-refresh plugins
 
 **Backend:**
 - FastAPI (Python >=3.10)
@@ -381,7 +382,7 @@ interface UserContentAccess {
 - **Internal**: TTA Shop (payment processing, purchase confirmation)
 - **External**: Clerk (authentication, user management), Supabase (database, file storage)
 - **Libraries**:
-  - Frontend: React 19.1, TanStack Router 1.157+, TanStack Query 5.90+, shadcn/ui, Tailwind CSS 4.2
+  - Frontend: React 19.1, TanStack Router 1.114+, TanStack Query 5.75+, shadcn/ui, Tailwind CSS 4.1, ESLint 9
   - Backend: FastAPI, Supabase Python client, PyJWT (Clerk validation)
 
 ### Events/Webhooks
@@ -451,10 +452,10 @@ interface UserContentAccess {
 
 ### Recommended Approach
 
-1. **Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup
+1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, Clerk provider, typed API client, mock data layer, ESLint)
 2. **Integrate Clerk**: Auth pages, JWT middleware for FastAPI
 3. **Set up Supabase**: Database schema, storage buckets for videos/files
-4. **Build Phase 1** (TTA Consulting): Landing page, auth, content dashboard, admin provisioning
+4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, auth, content dashboard, admin provisioning — Landing page complete with navbar, hero, stats, programmes, CTA, footer
 5. **Build Phase 2** (MapleBear): Parent dashboard, video library, consultant upload
 6. **Build Phase 3** (DSA Resources): Public content hub, purchase flow integration
 
@@ -575,3 +576,15 @@ interface UserContentAccess {
 - **Demographics**: Experienced education consultant/teacher, manages multiple students
 - **Needs**: Centralized upload system, reduce admin burden, enhance perceived service value
 - **Goals**: Streamline administrative work, provide transparent progress tracking
+
+---
+
+## Change Log
+
+### 2026-03-27 v1.1
+- Status: In Development
+- Changes:
+  - Updated Technology Stack to reflect actual installed package versions (Vite 6.x, TypeScript 5.7, TanStack Router 1.114+, TanStack Query 5.75+, Tailwind CSS 4.1)
+  - Added ESLint 9 (flat config with typescript-eslint, react-hooks, react-refresh) to tech stack
+  - Updated Implementation Guidance to track Phase 1 frontend progress: scaffold complete, landing page complete
+  - Updated Integration Points library versions to match installed dependencies

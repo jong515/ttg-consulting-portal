@@ -12,7 +12,6 @@ export const mockResources: Resource[] = [
     title: 'DSA pathways overview',
     type: 'video',
     topic: 'dsa-pathways',
-    topicLabel: TOPIC_LABELS['dsa-pathways'],
     description:
       'A comprehensive overview of Direct School Admission pathways, covering eligibility criteria, school options, and strategic planning for your child\u2019s application.',
     duration: '12 min',
@@ -24,7 +23,6 @@ export const mockResources: Resource[] = [
     title: 'Interview body language tips',
     type: 'video',
     topic: 'interview-preparation',
-    topicLabel: TOPIC_LABELS['interview-preparation'],
     description:
       'Learn how to present confidently in DSA interviews with practical body language techniques that help students make a strong first impression.',
     duration: '8 min',
@@ -36,7 +34,6 @@ export const mockResources: Resource[] = [
     title: 'Portfolio building workbook',
     type: 'pdf',
     topic: 'dsa-pathways',
-    topicLabel: TOPIC_LABELS['dsa-pathways'],
     description:
       'A step-by-step workbook to help parents and students compile a compelling portfolio showcasing achievements, talents, and extracurricular involvement.',
     duration: '24 pages',
@@ -48,7 +45,6 @@ export const mockResources: Resource[] = [
     title: 'Timeline & key deadlines 2026',
     type: 'article',
     topic: 'timelines-deadlines',
-    topicLabel: TOPIC_LABELS['timelines-deadlines'],
     description:
       'A complete calendar of DSA application windows, school-specific deadlines, and important dates for the 2026 admissions cycle.',
     duration: '5 min read',
@@ -60,7 +56,6 @@ export const mockResources: Resource[] = [
     title: 'Mock interview question bank',
     type: 'pdf',
     topic: 'interview-preparation',
-    topicLabel: TOPIC_LABELS['interview-preparation'],
     description:
       'Over 50 commonly asked DSA interview questions with suggested answer frameworks and tips for structuring responses.',
     duration: '18 pages',
@@ -72,7 +67,6 @@ export const mockResources: Resource[] = [
     title: 'School selection strategy',
     type: 'video',
     topic: 'dsa-pathways',
-    topicLabel: TOPIC_LABELS['dsa-pathways'],
     description:
       'How to shortlist schools based on your child\u2019s strengths, the school\u2019s talent areas, and realistic acceptance rates.',
     duration: '15 min',
@@ -84,7 +78,6 @@ export const mockResources: Resource[] = [
     title: 'Parent guide to DSA interviews',
     type: 'pdf',
     topic: 'interview-preparation',
-    topicLabel: TOPIC_LABELS['interview-preparation'],
     description:
       'Everything parents need to know about supporting their child through the DSA interview process, from preparation to day-of logistics.',
     duration: '32 pages',
@@ -96,7 +89,6 @@ export const mockResources: Resource[] = [
     title: 'Understanding talent areas',
     type: 'article',
     topic: 'dsa-pathways',
-    topicLabel: TOPIC_LABELS['dsa-pathways'],
     description:
       'An in-depth look at the various talent areas recognised under DSA, how schools evaluate applicants, and how to position your child effectively.',
     duration: '7 min read',
