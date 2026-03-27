@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+    --background: #FDFCFA;
+    --foreground: #1A1A1A;
+    --card: #FFFFFF;
+    --card-foreground: #1A1A1A;
+    --popover: #FFFFFF;
+    --popover-foreground: #1A1A1A;
+    --primary: #1B6B4A;
+    --primary-foreground: #FFFFFF;
+    --secondary: #F6F1EB;
+    --secondary-foreground: #1A1A1A;
+    --muted: #F6F1EB;
+    --muted-foreground: #6B6560;
+    --accent: #E8F5EE;
+    --accent-foreground: #1B6B4A;
+    --destructive: #DC2626;
+    --destructive-foreground: #FFFFFF;
+    --border: #E2DDD7;
+    --input: #E2DDD7;
+    --ring: #1B6B4A;
+    --chart-1: #1B6B4A;
+    --chart-2: #E8F5EE;
+    --chart-3: #F6F1EB;
+    --chart-4: #0E3D2B;
+    --chart-5: #6B6560;
+    --sidebar-background: #FDFCFA;
+    --sidebar-foreground: #1A1A1A;
+    --sidebar-primary: #1B6B4A;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #E8F5EE;
+    --sidebar-accent-foreground: #1B6B4A;
+    --sidebar-border: #E2DDD7;
+    --sidebar-ring: #1B6B4A;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar-background: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+@theme {
+  --color-brand-accent: #1B6B4A;
+  --color-brand-accent-dark: #0E3D2B;
+  --color-brand-accent-light: #E8F5EE;
+  --color-brand-warm: #F6F1EB;
+  --color-brand-bg: #FDFCFA;
+  --color-brand-text: #1A1A1A;
+  --color-brand-text-muted: #6B6560;
+  --color-brand-border: #E2DDD7;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, serif;
+}
