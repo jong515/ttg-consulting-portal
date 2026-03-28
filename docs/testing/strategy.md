@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - Testing Approach
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-03-28
 **Status**: Draft
 
 ---
@@ -12,7 +12,7 @@
 **Philosophy**: Test-Driven Development (TDD) — write tests before implementation.
 
 **Frontend Testing**: Vitest + React Testing Library
-**Backend Testing**: pytest + httpx (FastAPI TestClient)
+**Backend Testing**: pytest + pytest-asyncio + httpx (AsyncClient via ASGITransport)
 
 ---
 
@@ -58,8 +58,9 @@ describe('VideoLibrary', () => {
 - Permission/role checking functions
 - JWT validation logic
 - Data transformation utilities
+- Negative paths (404 for unknown routes, 405 for wrong HTTP methods)
 
-**File Location**: `backend/tests/unit/`
+**File Location**: `backend/tests/` (flat structure for now; split into `unit/` and `integration/` as the suite grows)
 
 **Naming**:
 ```python
@@ -68,6 +69,10 @@ class TestContentAccessService:
     def test_user_cannot_access_unprovisioned_content(self): ...
     def test_feedback_exceeding_500_chars_rejected(self): ...
 ```
+
+**Negative path pattern** — every router should include tests for:
+- Unknown route under the prefix returns 404
+- Wrong HTTP method on a known route returns 405
 
 ---
 
@@ -83,12 +88,13 @@ class TestContentAccessService:
 
 **What to test:**
 - API endpoint request/response flows
-- Auth middleware (valid JWT, invalid JWT, missing JWT)
+- Auth dependency (valid JWT, invalid JWT, missing JWT, missing `sub` claim)
+- JWKS fetch failures (timeout, malformed response)
 - Database operations via Supabase client
 - Content access scoping (parent sees only own child's data)
 - Video upload flow
 
-**File Location**: `backend/tests/integration/`
+**File Location**: `backend/tests/` (integration tests will move to `backend/tests/integration/` as suite grows)
 
 **Example**:
 ```python
@@ -143,6 +149,8 @@ async def test_parent_can_only_see_own_childs_videos(client, parent_token, other
 - Supabase client mocked for unit tests
 - Real Supabase instance for integration tests (test project)
 - Clerk JWT mocked via test fixtures
+- Environment variables set via `conftest.py` (`os.environ.setdefault`) before app import
+- `ENVIRONMENT` set to `"testing"` in test configuration; health tests assert this value
 
 ---
 

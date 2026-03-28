@@ -22,10 +22,13 @@ Think Teach Group Consulting Portal — a unified platform for consulting servic
 
 **Backend:**
 - **Language**: Python >=3.10
-- **Framework**: FastAPI
-- **Database**: Supabase (PostgreSQL)
+- **Framework**: FastAPI >=0.114.2
+- **Database**: Supabase (PostgreSQL, accessed via supabase-py)
 - **Storage**: Supabase Storage (video files, documents)
-- **Auth**: Clerk JWT validation on all protected routes
+- **Auth**: Clerk JWT verification via JWKS (PyJWT + httpx)
+- **Logging**: structlog (JSON output)
+- **Validation**: Pydantic v2 + pydantic-settings
+- **Linting**: Ruff + Pyright
 
 **Infrastructure:**
 - **CI/CD**: GitHub Actions (lint, Pyright/tsc, tests, Docker build)
@@ -47,17 +50,20 @@ frontend/              # React SPA (Vite)
     types/             # TypeScript type definitions
 backend/               # FastAPI application
   app/
-    api/               # Route handlers
-    core/              # Config, security, dependencies
-    models/            # SQLAlchemy/Supabase models
-    schemas/           # Pydantic request/response schemas
-    services/          # Business logic
+    routers/           # Route handlers (health, future endpoints)
+    middleware/         # structlog request logging
+    models/            # Pydantic schemas + shared enums
+    services/          # Business logic + Supabase client
+    config.py          # Pydantic Settings (env vars)
+    dependencies.py    # Clerk JWT auth + Supabase DI
+    main.py            # App factory, lifespan, CORS, router mounting
+  tests/               # pytest + httpx async tests
 ```
 
 **Key Patterns:**
 - Frontend routes map to file-based TanStack Router convention
 - All API calls go through TanStack Query hooks in `hooks/`
-- Clerk JWT validated as FastAPI dependency injection middleware
+- Clerk JWT validated as FastAPI dependency injection
 - Supabase RLS policies enforce data access boundaries
 
 ## Development Commands
@@ -73,12 +79,15 @@ npm run type-check                 # TypeScript compiler check
 
 **Backend:**
 ```bash
-cd backend && pip install -r requirements.txt  # Install deps
-uvicorn app.main:app --reload                  # Dev server (localhost:8000)
-pytest                                          # Run all tests
-pytest tests/unit/                              # Unit tests only
-pytest tests/integration/                       # Integration tests only
-mypy app/                                       # Type check (or pyright)
+cd backend
+python -m venv .venv                   # Create virtual environment
+.venv/bin/activate                     # Activate (Linux/Mac)
+# .venv\Scripts\Activate.ps1           # Activate (Windows)
+pip install -e ".[dev]"                # Install deps (editable + dev tools)
+uvicorn app.main:app --reload          # Dev server (localhost:8000)
+pytest -v                              # Run all tests
+ruff check .                           # Lint
+pyright                                # Type check
 ```
 
 **Docker:**
@@ -98,8 +107,10 @@ docker compose build               # Build images
 **Backend (Python/FastAPI):**
 - snake_case for files, functions, variables
 - Pydantic schemas for all request/response validation
-- Dependency injection for auth, database sessions
+- All responses use `ApiResponse[T]` envelope (`data` + `error` fields)
+- Dependency injection for auth (`get_current_user`), Supabase (`get_supabase`)
 - Type hints on all function signatures
+- `from __future__ import annotations` in every module
 
 **Import Order (Frontend):**
 ```typescript
@@ -113,7 +124,7 @@ import type { Video } from '@/types'        // 4. Types
 ## Testing Strategy
 
 **Frontend**: Vitest + React Testing Library
-**Backend**: pytest + httpx (FastAPI TestClient)
+**Backend**: pytest + pytest-asyncio + httpx (AsyncClient via ASGITransport)
 
 - 70% unit tests: validation, permissions, business logic, components
 - 20% integration: API endpoints, auth flow, database queries
@@ -123,28 +134,29 @@ import type { Video } from '@/types'        // 4. Types
 
 ## API Integration
 
-**Base URL**: `http://localhost:8000/api` (dev)
-**Auth**: Clerk JWT in `Authorization: Bearer <token>` header
-**Validation**: FastAPI validates Clerk JWT as dependency before route handler
+**Base URL**: `http://localhost:8000/api/v1` (dev)
+**Auth**: Clerk JWT in `Authorization: Bearer <token>` header, verified via JWKS
+**Validation**: FastAPI validates Clerk JWT as dependency (`Depends(get_current_user)`)
 
 **Key endpoints:**
-- `POST /api/auth/validate` — validate JWT, return user profile
-- `GET /api/content` — list content scoped to user's access
-- `GET /api/students/{id}/videos` — student video library
-- `POST /api/students/{id}/videos` — upload recording (consultant)
-- `PUT /api/videos/{id}/feedback` — add/edit feedback (consultant)
+- `GET /api/v1/health` — public health check (no auth)
+- Future: resource, user, progress, and video endpoints under `/api/v1/`
 
 ## Environment Variables
 
 **Frontend** (`.env.local`):
 - `VITE_CLERK_PUBLISHABLE_KEY` — Clerk frontend key
-- `VITE_API_URL` — Backend API base URL
+- `VITE_API_BASE_URL` — Backend API base URL
 
 **Backend** (`.env`):
-- `CLERK_SECRET_KEY` — Clerk backend secret
 - `SUPABASE_URL` — Supabase project URL
-- `SUPABASE_SERVICE_KEY` — Supabase service role key
-- `DATABASE_URL` — PostgreSQL connection string (Supabase)
+- `SUPABASE_SERVICE_KEY` — Supabase service role key (server-side only)
+- `CLERK_JWKS_URL` — Clerk JWKS endpoint for JWT verification
+- `CLERK_ISSUER` — Clerk JWT issuer URL
+- `CLERK_AUDIENCE` — Clerk JWT audience (optional)
+- `FRONTEND_URL` — Frontend origin for CORS (default: `http://localhost:5173`)
+- `LOG_LEVEL` — structlog level (default: `INFO`)
+- `ENVIRONMENT` — `development` | `staging` | `production`
 
 ## External Documentation
 

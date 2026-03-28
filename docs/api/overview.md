@@ -3,7 +3,7 @@
 ## TTG Consulting Portal API
 
 **Version**: 1.0
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-03-28
 **Status**: Draft
 
 ---
@@ -13,7 +13,7 @@
 RESTful API built with FastAPI (Python >=3.10). All protected endpoints require a valid Clerk JWT.
 
 **Base URL**:
-- Development: `http://localhost:8000/api`
+- Development: `http://localhost:8000/api/v1`
 - Staging: TBD
 - Production: TBD
 
@@ -30,7 +30,11 @@ RESTful API built with FastAPI (Python >=3.10). All protected endpoints require 
 Authorization: Bearer <clerk-jwt>
 ```
 
-**Flow**: Client authenticates via Clerk SDK -> receives JWT -> passes to FastAPI -> FastAPI validates JWT via Clerk's JWKS endpoint -> grants access.
+**Flow**: Client authenticates via Clerk SDK -> receives JWT -> passes to FastAPI -> FastAPI validates JWT via Clerk's JWKS endpoint (RS256 only, 10s timeout, 1h key cache) -> extracts `sub` claim as user identity -> grants access.
+
+**Error handling**: Missing/invalid tokens return `401`. JWKS fetch failures return `401` (logged server-side). Unexpected auth errors are caught and returned as clean `401` responses — no stack traces leak to clients.
+
+**Audience verification**: When `CLERK_AUDIENCE` is configured, the `aud` claim is verified. In development (unset), audience verification is skipped.
 
 **Session**: 7-day persistence unless user logs out.
 
@@ -38,20 +42,21 @@ Authorization: Bearer <clerk-jwt>
 
 ## Common Response Format
 
+All endpoints return an `ApiResponse[T]` envelope with `data` and `error` fields.
+
 ### Success Response
 ```json
 {
-  "data": { },
-  "meta": {
-    "timestamp": "2026-03-22T10:00:00Z"
-  }
+  "data": { ... },
+  "error": null
 }
 ```
 
 ### Error Response
 ```json
 {
-  "detail": {
+  "data": null,
+  "error": {
     "code": "ERROR_CODE",
     "message": "Human-readable error message"
   }
@@ -170,15 +175,18 @@ POST   /api/users/provision        # Provision content access (admin only)
 ### Health
 
 ```
-GET    /api/health                 # Health check (no auth)
+GET    /api/v1/health              # Health check (no auth)
 ```
 
-**Response**:
+**Response** (200):
 ```json
 {
-  "status": "healthy",
-  "version": "1.0.0",
-  "timestamp": "2026-03-22T10:00:00Z"
+  "data": {
+    "status": "ok",
+    "version": "0.1.0",
+    "environment": "development"
+  },
+  "error": null
 }
 ```
 
@@ -214,9 +222,11 @@ GET    /api/health                 # Health check (no auth)
 ## Security
 
 - HTTPS only in production
-- CORS: portal domain only
-- Clerk JWT validated on every protected request
-- Supabase RLS as secondary access control layer
+- CORS: single frontend origin with credentials
+- Clerk JWT validated on every protected request (RS256 only, JWKS cached with 1h TTL)
+- JWKS fetch uses 10s HTTP timeout to prevent worker starvation
+- All auth errors (malformed JWKS, missing claims, unexpected exceptions) return clean 401 — no stack traces
+- Supabase service role key used (bypasses RLS) — endpoints must scope queries by `clerk_id`
 - Input validation via Pydantic schemas
 - Signed/expiring URLs for file access
 
