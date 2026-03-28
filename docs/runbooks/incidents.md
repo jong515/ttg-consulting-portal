@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - Operational Procedures
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-03-28
 **Status**: 🚧 Planning
 
 ---
@@ -234,23 +234,28 @@ This runbook provides procedures for responding to and resolving incidents in th
 
 ### Authentication Issues
 
-**Symptoms**: Users unable to log in
+**Symptoms**: Users unable to log in, 401 errors on all protected endpoints
 
 **Diagnosis**:
-- Check authentication service logs
-- Verify JWT secret configuration
-- Check database user records
+- Check application logs for `"Failed to fetch JWKS"` (JWKS endpoint unreachable)
+- Check for `"Unexpected error during authentication"` (catch-all triggered — investigate root cause)
+- Check for `"Token missing required 'sub' claim"` in 401 responses (Clerk JWT template may need `sub`)
+- Verify `CLERK_JWKS_URL` and `CLERK_ISSUER` environment variables are set and correct
+- Verify Clerk dashboard status (https://status.clerk.com)
 
 **Common Causes**:
-- JWT secret misconfiguration
-- Database issues
-- Rate limiting
-- Session store issues
+- `CLERK_JWKS_URL` or `CLERK_ISSUER` misconfigured or unset
+- Clerk JWKS endpoint down or unreachable (10s timeout will fire)
+- JWKS cache expired and refresh failed — all new requests fail until Clerk recovers
+- `CLERK_AUDIENCE` mismatch in staging/production (token's `aud` doesn't match configured value)
+- Clerk JWT template missing `sub` claim (custom templates override defaults)
 
 **Resolution**:
-1. Verify environment variables
-2. Clear session store if needed
-3. Check for locked accounts
+1. Verify `CLERK_JWKS_URL`, `CLERK_ISSUER`, and `CLERK_AUDIENCE` environment variables
+2. Check Clerk service status
+3. If JWKS fetch is timing out, check network connectivity from the backend host to Clerk
+4. If `CLERK_AUDIENCE` was recently changed, redeploy with the updated value
+5. Application restart clears the JWKS cache, forcing a fresh fetch
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - Deployment Guide
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-03-28
 **Status**: Draft
 
 ---
@@ -88,7 +88,7 @@
 4. **Build** — Docker image build
 5. **Push** — Push to GitHub Container Registry (GHCR)
 6. **Deploy** — Deploy to target environment
-7. **Smoke Test** — Verify `/api/health` endpoint
+7. **Smoke Test** — Verify `/api/v1/health` endpoint
 
 ---
 
@@ -129,22 +129,27 @@ docker push ghcr.io/[org]/ttg-portal-backend:latest
 ### Frontend (`.env.local`)
 ```bash
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-VITE_API_URL=http://localhost:8000/api
+VITE_API_BASE_URL=http://localhost:8000/api/v1
 ```
 
 ### Backend (`.env`)
 ```bash
-CLERK_SECRET_KEY=sk_test_...
 SUPABASE_URL=https://[project].supabase.co
 SUPABASE_SERVICE_KEY=eyJ...
-DATABASE_URL=postgresql://...
-CORS_ORIGINS=http://localhost:5173
+CLERK_JWKS_URL=https://[clerk-instance].clerk.accounts.dev/.well-known/jwks.json
+CLERK_ISSUER=https://[clerk-instance].clerk.accounts.dev
+CLERK_AUDIENCE=                         # Optional in dev; required in staging/production
+FRONTEND_URL=http://localhost:5173      # CORS origin
+LOG_LEVEL=INFO
+ENVIRONMENT=development                 # development | staging | production
 ```
 
 **Security**:
 - Never commit `.env` files to git
 - Use hosting provider's secret management for staging/production
 - Rotate secrets regularly
+- `CLERK_AUDIENCE` **must** be set in staging/production to prevent cross-client token acceptance
+- `SUPABASE_SERVICE_KEY` bypasses RLS — handle with care; endpoints must scope queries by user
 
 ---
 
@@ -167,14 +172,17 @@ supabase db push
 
 ## Health Check
 
-**Endpoint**: `GET /api/health`
+**Endpoint**: `GET /api/v1/health`
 
-**Response**:
+**Response** (`ApiResponse[HealthResponse]` envelope):
 ```json
 {
-  "status": "healthy",
-  "version": "1.0.0",
-  "timestamp": "2026-03-22T10:00:00Z"
+  "data": {
+    "status": "ok",
+    "version": "0.1.0",
+    "environment": "production"
+  },
+  "error": null
 }
 ```
 
@@ -198,7 +206,7 @@ supabase db push
 
 1. Identify issue via monitoring/alerts
 2. Revert to previous Docker image tag
-3. Verify `/api/health` and key flows
+3. Verify `/api/v1/health` and key flows
 4. Investigate root cause
 5. Fix, test, redeploy
 

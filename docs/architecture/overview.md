@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - System Architecture
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-03-28
 **Status**: Draft
 
 ---
@@ -82,23 +82,24 @@ frontend/src/
 **Directory Structure:**
 ```
 backend/app/
-  api/
-    routes/            # Route handlers (auth, content, videos, students)
-    deps.py            # Dependency injection (auth, db session)
-  core/
-    config.py          # Settings and environment variables
-    security.py        # Clerk JWT validation
-  models/              # Database models / Supabase table definitions
-  schemas/             # Pydantic request/response schemas
-  services/            # Business logic layer
-  main.py              # FastAPI app entry point
+  routers/             # Route handlers (health, future endpoints)
+  middleware/           # structlog request logging
+  models/              # Pydantic schemas + shared enums
+  services/            # Business logic + Supabase client
+  config.py            # Pydantic Settings (env vars)
+  dependencies.py      # Clerk JWT auth + Supabase DI
+  main.py              # App factory, lifespan, CORS, router mounting
+backend/tests/         # pytest + httpx async tests
 ```
 
 **Key Patterns:**
-- Clerk JWT validation as FastAPI dependency (`Depends(get_current_user)`)
+- Clerk JWT validated as FastAPI dependency injection (`Depends(get_current_user)`)
+- JWKS keys fetched from Clerk with 1-hour TTL cache and 10s HTTP timeout
+- Malformed JWKS responses and missing JWT claims handled gracefully (clean 401)
+- Catch-all exception handler in auth path prevents stack trace leaks
 - Pydantic schemas for all request/response validation
-- Service layer separates business logic from route handlers
-- Supabase client injected via dependency injection
+- All responses use `ApiResponse[T]` envelope (`data` + `error` fields)
+- Supabase client injected via dependency injection (service role key — see Security note below)
 
 ---
 
@@ -119,6 +120,13 @@ backend/app/
 **Authentication**: Clerk (managed service)
 - JWT-based, admin-provisioned (TTA) or self-registration (MapleBear)
 - 7-day session persistence
+- RS256 algorithm enforced (no algorithm confusion)
+- JWKS keys cached (1-hour TTL) with 10-second HTTP timeout to prevent worker starvation
+- Malformed JWKS responses, missing `sub` claims, and unexpected errors all produce clean 401 responses
+
+**Audience Verification**: Optional in development (`CLERK_AUDIENCE` unset skips `aud` check). Must be configured in staging/production to prevent cross-client token acceptance.
+
+**Supabase Service Role Key**: The current scaffold uses the Supabase service role key (bypasses RLS) for all authenticated requests. Each future endpoint **must** manually scope queries by `clerk_id`. Per-user Supabase JWTs for full RLS enforcement are planned for a later phase.
 
 **Authorization**: Role-based (PARENT, CLIENT, CONSULTANT, ADMIN)
 - Enforced at API layer (FastAPI deps) + database layer (Supabase RLS)
@@ -126,7 +134,8 @@ backend/app/
 **Data Protection:**
 - HTTPS in transit, Supabase encryption at rest
 - Signed/expiring URLs for video/file access
-- CORS restricted to portal domain
+- CORS restricted to single frontend origin (with credentials)
+- Auth header values excluded from request logs
 
 ---
 
