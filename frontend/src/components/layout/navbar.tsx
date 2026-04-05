@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Menu } from 'lucide-react';
+import { usePortalAuth } from '@/auth/auth-context';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -12,6 +13,7 @@ import {
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { isLoaded, isSignedIn, signOut } = usePortalAuth();
 
   return (
     <nav className="sticky top-0 z-50 bg-brand-bg/95 backdrop-blur-sm border-b border-brand-border">
@@ -38,12 +40,31 @@ export function Navbar() {
           >
             About
           </a>
-          <Button
-            asChild
-            className="bg-brand-accent hover:bg-brand-accent/90 text-white"
-          >
-            <a href="/auth/login">Sign in</a>
-          </Button>
+          {!isLoaded ? (
+            <div className="relative h-9 w-28 rounded-md bg-brand-border/40">
+              <span className="sr-only">Loading account</span>
+            </div>
+          ) : isSignedIn ? (
+            <div className="flex items-center gap-2">
+              <Button variant="outline" asChild className="border-brand-border">
+                <Link to="/dashboard">Portal</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-brand-text-muted hover:text-brand-text"
+                onClick={() => void signOut()}
+              >
+                Sign out
+              </Button>
+            </div>
+          ) : (
+            <Button
+              asChild
+              className="bg-brand-accent hover:bg-brand-accent/90 text-white"
+            >
+              <Link to="/auth/login">Sign in</Link>
+            </Button>
+          )}
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -73,12 +94,38 @@ export function Navbar() {
               >
                 About
               </a>
-              <Button
-                asChild
-                className="mt-4 bg-brand-accent hover:bg-brand-accent/90 text-white"
-              >
-                <a href="/auth/login">Sign in</a>
-              </Button>
+              {!isLoaded ? (
+                <div className="relative mt-4 h-10 rounded-md bg-brand-border/40">
+                  <span className="sr-only">Loading account</span>
+                </div>
+              ) : isSignedIn ? (
+                <div className="mt-4 flex flex-col gap-2">
+                  <Button asChild variant="outline" className="border-brand-border">
+                    <Link to="/dashboard" onClick={() => setOpen(false)}>
+                      Portal
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="text-brand-text-muted"
+                    onClick={() => {
+                      setOpen(false);
+                      void signOut();
+                    }}
+                  >
+                    Sign out
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  asChild
+                  className="mt-4 bg-brand-accent hover:bg-brand-accent/90 text-white"
+                >
+                  <Link to="/auth/login" onClick={() => setOpen(false)}>
+                    Sign in
+                  </Link>
+                </Button>
+              )}
             </div>
           </SheetContent>
         </Sheet>

@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 
 export function CtaSection() {
@@ -19,7 +20,7 @@ export function CtaSection() {
           size="lg"
           className="bg-white text-brand-accent-dark hover:bg-white/90 rounded-lg h-12 px-8 text-base shrink-0"
         >
-          <a href="/auth/login">Sign in to portal</a>
+          <Link to="/auth/login">Sign in to portal</Link>
         </Button>
       </div>
     </section>

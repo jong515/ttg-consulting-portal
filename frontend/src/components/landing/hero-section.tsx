@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 
 export function HeroSection() {
@@ -24,10 +25,10 @@ export function HeroSection() {
           size="lg"
           className="bg-brand-accent hover:bg-brand-accent/90 text-white rounded-lg h-12 px-6 text-base"
         >
-          <a href="/auth/login">
+          <Link to="/auth/login">
             Access your portal
             <ArrowRight className="ml-1 h-4 w-4" />
-          </a>
+          </Link>
         </Button>
 
         <Button
