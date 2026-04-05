@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+
+# TanStack Router (Vite plugin cache)
+frontend/.tanstack/
 __pycache__/
 *.pyc
 .venv/

@@ -10,12 +10,17 @@ This guide describes the development workflow for the TTG Consulting Portal.
 # Pull latest changes
 git pull origin main
 
-# Install/update dependencies
-# TBD
+# Install / update dependencies (from repo root)
+npm install                    # root: concurrently + run-script-os
+cd frontend && npm install     # SPA dependencies
+cd ../backend && pip install -e ".[dev]"   # with .venv activated
 
-# Start development server
-# TBD
+# Start full stack (repo root): Vite + Uvicorn
+cd ..
+npm run dev
 ```
+
+Use **`npm run dev`** only in **`frontend/`** and **`uvicorn app.main:app --reload`** in **`backend/`** instead if you prefer two terminals (see [Setup Guide](./setup.md)).
 
 ### Making Changes
 
@@ -35,9 +40,8 @@ git pull origin main
 
 4. **Run tests and quality checks**
    ```bash
-   # TBD - test commands
-   # TBD - lint commands
-   # TBD - type check commands
+   cd frontend && npm run lint && npm run type-check
+   cd ../backend && ruff check . && pyright && pytest -v
    ```
 
 5. **Commit changes**
@@ -51,27 +55,23 @@ git pull origin main
 ### Unit Tests
 
 ```bash
-# Run all unit tests
-# TBD
+# Backend (pytest)
+cd backend && pytest -v
 
-# Run specific test file
-# TBD
-
-# Run in watch mode
-# TBD
+# Frontend (when Vitest is configured)
+# cd frontend && npm test
 ```
 
 ### Integration Tests
 
 ```bash
-# Run integration tests
-# TBD
+cd backend && pytest -v
 ```
 
 ### E2E Tests
 
 ```bash
-# Run E2E tests (only when required)
+# Run E2E tests only when the project adds a runner (e.g. Playwright)
 # TBD
 ```
 
@@ -80,19 +80,21 @@ git pull origin main
 ### Linting
 
 ```bash
-# TBD
+cd frontend && npm run lint
+cd ../backend && ruff check .
 ```
 
 ### Formatting
 
 ```bash
-# TBD
+# Ruff can format Python when configured; frontend relies on ESLint + Prettier (if added)
 ```
 
 ### Type Checking
 
 ```bash
-# TBD
+cd frontend && npm run type-check
+cd ../backend && pyright
 ```
 
 ## Git Workflow
@@ -155,21 +157,24 @@ Related to STORY-123
 ### Development
 
 ```bash
-# TBD
+npm run dev              # repo root: frontend + API
+cd frontend && npm run dev
+cd backend && uvicorn app.main:app --reload
 ```
 
 ### Database
 
 ```bash
-# TBD
+supabase db push
+# supabase migration new <name>  # when adding migrations
 ```
 
 ### Building
 
 ```bash
-# TBD
+cd frontend && npm run build && npm run preview
 ```
 
 ---
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-04-05

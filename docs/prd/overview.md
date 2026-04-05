@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.1
+**Version**: 1.2.1
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-03-27
+**Last Updated**: 2026-04-05
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -42,6 +42,7 @@ This PRD is a living document that will evolve during development:
 
 - **Performance**: Screen transitions <2s, API responses <500ms
 - **Security**: PII encrypted in transit (HTTPS) and at rest. Clerk JWT validation on all protected routes
+- **Development demos**: The SPA may run a **frontend-only mock auth** path in local development (`VITE_AUTH_MODE=mock`) with static fixture data and **no** Clerk session; production builds **must not** ship this mode (enforced at app init). Mock mode does not replace Clerk for staging or production users
 - **Accessibility**: WCAG 2.1 AA minimum
 - **Scalability**: Support 1,000+ concurrent users, horizontal scaling capability
 - **Platform**: Responsive web application optimized for mobile and desktop browsers
@@ -198,6 +199,8 @@ And no login is required
 
 **Authentication**: Clerk handles all auth (sign-up, sign-in, password reset, session management). No self-serve sign-up for TTA consulting portal — accounts are admin-provisioned only. MapleBear parents can self-register.
 
+**Local demo / UX prototyping (non-production)**: For stakeholder walkthroughs without Clerk or a running API, the React app supports **`VITE_AUTH_MODE=mock`** (development only): in-memory “sign in”, shared `usePortalAuth()` abstraction, and static resource/progress fixtures (no FastAPI calls). This path is explicitly **out of scope** for production, staging acceptance, or security review parity with Clerk.
+
 **Content Access**: Strictly scoped — users only see content their account is provisioned for. Videos play in-browser. Resources remain accessible indefinitely (one-time purchase, lifetime access).
 
 **Payment**: All payments processed through existing TTA Shop infrastructure. Portal does not handle payment directly.
@@ -262,9 +265,28 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 
 **Auth:** Clerk (sign-up, sign-in, user management, JWT)
 
+**Frontend authentication modes (implemented shell):**
+
+| Mode | Configuration | Runtime behaviour |
+|------|---------------|-------------------|
+| **Clerk (default)** | `VITE_AUTH_MODE` unset or any value other than `mock` (after normalisation); `VITE_CLERK_PUBLISHABLE_KEY` required | `ClerkProvider` plus a thin bridge into a shared portal auth context; `getToken()` supplies JWT for `apiFetch` |
+| **Mock (local demo)** | `VITE_AUTH_MODE=mock` (case-insensitive); **rejected** when the app is built/served as production (`import.meta.env.PROD`) | `MockAuthProvider` only; demo action on `/auth/login`; `/dashboard` shows static lists; fixture data is also used in dev when the API base URL is unset |
+
+**SPA routes (Phase 1 shell):** `/` (landing), `/auth/login` (Clerk embedded sign-in or mock demo), `/auth/sign-up` (Clerk only; in mock mode redirect to login), `/dashboard` (post-login resource shell; redirects to login if unauthenticated).
+
+**Client data loading:** TanStack Query keys for resources and progress include a **`mock` vs `live`** segment so switching fixture vs API source during development does not reuse stale cached rows.
+
 **Deployment:**
 - Docker images pushed to GitHub Container Registry (GHCR)
 - GitHub Actions CI/CD (lint, type-check via Pyright/tsc, tests, image build)
+
+### Local development (full-stack bootstrap)
+
+- The **repository root** includes a private **`package.json`** for orchestration only (not a publishable package).
+- **`npm install`** at the root installs dev tooling (**`concurrently`**, **`run-script-os`**). The SPA still has its own dependencies under **`frontend/`** (`npm install` there, or rely on an existing `frontend/node_modules`).
+- **`npm run dev`** from the root starts **both** processes: **Vite** in `frontend/` and **Uvicorn** for **`app.main:app`** with **`--reload`**, with working directory **`backend/`** so the `app` package resolves.
+- The API process uses Python from **`backend/.venv`**: **`run-script-os`** selects **`Scripts\python.exe`** on Windows and **`bin/python`** on macOS/Linux.
+- **Prerequisites** before `npm run dev`: create **`backend/.venv`**, run **`pip install -e ".[dev]"`** from `backend/`, configure **`frontend/.env.local`** and **`backend/.env`** per each folder’s **`.env.example`**. Developers may still run **`npm run dev`** only in `frontend/` and **`uvicorn app.main:app --reload`** only in `backend/` if they prefer two terminals.
 
 ### API Endpoints (Phase 1 — TTA Consulting)
 
@@ -412,6 +434,7 @@ interface UserContentAccess {
 - No self-serve sign-up option (admin-only account creation for TTA)
 - TTA/consulting portal branding
 - Responsive across desktop and mobile
+- **Local mock mode only**: a labelled prototype control (e.g. “Continue as test parent”) replaces real credentials; copy must state that no real session is created
 
 **3. Content Dashboard** (authenticated)
 - Personalized greeting ("Welcome back, [First Name]")
@@ -452,10 +475,10 @@ interface UserContentAccess {
 
 ### Recommended Approach
 
-1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, Clerk provider, typed API client, mock data layer, ESLint)
-2. **Integrate Clerk**: Auth pages, JWT middleware for FastAPI
+1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, typed API client, static mock data layer, ESLint). **Done** — Portal auth abstraction (`usePortalAuth`), `VITE_AUTH_MODE=mock` demo path (dev-only), routes `/auth/login`, `/auth/sign-up`, `/dashboard`, navbar/landing SPA links, TanStack Query keys scoped by mock vs live data source. **Done** — Root **`npm run dev`** using **`concurrently`** + **`run-script-os`** to start Vite and Uvicorn together for local full-stack development.
+2. **Integrate Clerk**: JWT validation middleware for FastAPI; production auth hardening. SPA shells: Clerk components on `/auth/login` and `/auth/sign-up`
 3. **Set up Supabase**: Database schema, storage buckets for videos/files
-4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, auth, content dashboard, admin provisioning — Landing page complete with navbar, hero, stats, programmes, CTA, footer
+4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, ~~auth shell (Clerk + mock demo)~~, ~~dashboard shell (mock/API hooks)~~, admin provisioning — Landing page complete with navbar, hero, stats, programmes, CTA, footer; authenticated dashboard shell lists resources/progress from fixtures or API per env
 5. **Build Phase 2** (MapleBear): Parent dashboard, video library, consultant upload
 6. **Build Phase 3** (DSA Resources): Public content hub, purchase flow integration
 
@@ -491,6 +514,7 @@ interface UserContentAccess {
 - [ ] User role/permission checks
 - [ ] Video metadata validation
 - [ ] Feedback character limit enforcement
+- [ ] (Optional, when Vitest is added) Frontend `VITE_AUTH_MODE` / mock-vs-live data source helpers — case normalisation and alignment with `getAuthMode()`
 
 ### Integration Tests
 - [ ] Auth flow: Clerk JWT -> FastAPI validation -> user profile response
@@ -504,6 +528,9 @@ interface UserContentAccess {
 - [ ] Public DSA content browsing -> purchase CTA flow
 
 ### Manual Verification
+- [ ] **Dev demo (mock mode)**: With `VITE_AUTH_MODE=mock` and no Clerk key, open `/`, navigate to `/auth/login`, complete demo sign-in, confirm `/dashboard` shows static resource cards without calling the backend
+- [ ] **Dev demo (case normalisation)**: With `VITE_AUTH_MODE=Mock` (mixed case) and `VITE_API_BASE_URL` set, confirm dashboard still uses fixture data (no failing API calls)
+- [ ] **Clerk mode**: With valid Clerk publishable key, `/auth/login` shows Clerk sign-in; after sign-in, user reaches `/dashboard`; sign-out clears session and navbar returns to “Sign in”
 - [ ] **AC: Auth Page**: Login, failed login, forgot password all work
 - [ ] **AC: Content Dashboard**: Shows only provisioned content
 - [ ] **AC: Video Library**: Parent sees only own child's videos
@@ -580,6 +607,23 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-05 v1.2.1
+- Status: In Development
+- Changes:
+  - Documented **local full-stack initialisation**: root **`package.json`**, **`npm install`** at repo root, **`npm run dev`** (Vite + Uvicorn via **`concurrently`** and OS-specific **`backend/.venv`** paths via **`run-script-os`**)
+  - Extended **Technical Specification** with **Local development (full-stack bootstrap)** and noted two-terminal alternative
+  - Updated **Implementation Guidance** (scaffold item) to mark root dev orchestration **Done**
+  - Aligned **[Setup Guide](../getting-started/setup.md)** and **[Development Workflow](../getting-started/development.md)** with root **`npm run dev`**, **`backend/.venv`**, **`pip install -e ".[dev]"`**, and health URL **`/api/v1/health`**
+
+### 2026-04-05 v1.2
+- Status: In Development
+- Changes:
+  - Documented frontend **mock auth / demo mode** (`VITE_AUTH_MODE=mock`), dev-only constraint, and shared portal auth abstraction aligned with implementation
+  - Added **Technical Specification** table for Clerk vs mock modes, Phase 1 **SPA routes** (`/auth/login`, `/auth/sign-up`, `/dashboard`), and TanStack Query **mock vs live** cache key segment
+  - Extended **Non-Functional** and **Functional** auth notes to separate production Clerk from local prototyping
+  - Updated **UX** auth page notes for mock-mode labelling
+  - Refreshed **Implementation Guidance** (Phase 1 progress) and **Testing Strategy** (manual mock/Clerk checks; optional Vitest note for env helpers)
 
 ### 2026-03-27 v1.1
 - Status: In Development

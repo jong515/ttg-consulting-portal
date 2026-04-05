@@ -1,16 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@clerk/react';
+import { usePortalAuth } from '@/auth/auth-context';
+import { shouldUseMockApiData } from '@/auth/env';
 import { apiFetch } from '@/lib/api';
 import { mockResources } from '@/lib/mock-data';
 import type { Resource } from '@/types';
 
 export function useResources() {
-  const { getToken } = useAuth();
+  const { getToken } = usePortalAuth();
+  const source = shouldUseMockApiData() ? 'mock' : 'live';
 
   const { data: resources = [], isLoading, error } = useQuery({
-    queryKey: ['resources'],
+    queryKey: ['resources', source],
     queryFn: () => {
-      if (import.meta.env.DEV && !import.meta.env.VITE_API_BASE_URL) {
+      if (shouldUseMockApiData()) {
         return Promise.resolve(mockResources);
       }
       return apiFetch<Resource[]>('/resources', getToken);
