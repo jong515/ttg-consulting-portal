@@ -68,6 +68,14 @@ backend/               # FastAPI application
 
 ## Development Commands
 
+**Full stack (repo root):**
+```bash
+npm install                          # Root dev tooling: concurrently + run-script-os
+npm run dev                          # Vite (frontend) + Uvicorn (backend) together
+```
+
+Requires `frontend` dependencies installed and `backend/.venv` with `pip install -e ".[dev]"` (see [docs/getting-started/setup.md](docs/getting-started/setup.md)).
+
 **Frontend:**
 ```bash
 cd frontend && npm install         # Install dependencies

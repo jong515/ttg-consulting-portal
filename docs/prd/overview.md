@@ -1,6 +1,6 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.2
+**Version**: 1.2.1
 **Component**: Full-stack
 **Status**: In Development
 **Last Updated**: 2026-04-05
@@ -280,6 +280,14 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 - Docker images pushed to GitHub Container Registry (GHCR)
 - GitHub Actions CI/CD (lint, type-check via Pyright/tsc, tests, image build)
 
+### Local development (full-stack bootstrap)
+
+- The **repository root** includes a private **`package.json`** for orchestration only (not a publishable package).
+- **`npm install`** at the root installs dev tooling (**`concurrently`**, **`run-script-os`**). The SPA still has its own dependencies under **`frontend/`** (`npm install` there, or rely on an existing `frontend/node_modules`).
+- **`npm run dev`** from the root starts **both** processes: **Vite** in `frontend/` and **Uvicorn** for **`app.main:app`** with **`--reload`**, with working directory **`backend/`** so the `app` package resolves.
+- The API process uses Python from **`backend/.venv`**: **`run-script-os`** selects **`Scripts\python.exe`** on Windows and **`bin/python`** on macOS/Linux.
+- **Prerequisites** before `npm run dev`: create **`backend/.venv`**, run **`pip install -e ".[dev]"`** from `backend/`, configure **`frontend/.env.local`** and **`backend/.env`** per each folder’s **`.env.example`**. Developers may still run **`npm run dev`** only in `frontend/` and **`uvicorn app.main:app --reload`** only in `backend/` if they prefer two terminals.
+
 ### API Endpoints (Phase 1 — TTA Consulting)
 
 #### `POST /api/auth/validate`
@@ -467,7 +475,7 @@ interface UserContentAccess {
 
 ### Recommended Approach
 
-1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, typed API client, static mock data layer, ESLint). **Done** — Portal auth abstraction (`usePortalAuth`), `VITE_AUTH_MODE=mock` demo path (dev-only), routes `/auth/login`, `/auth/sign-up`, `/dashboard`, navbar/landing SPA links, TanStack Query keys scoped by mock vs live data source.
+1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, typed API client, static mock data layer, ESLint). **Done** — Portal auth abstraction (`usePortalAuth`), `VITE_AUTH_MODE=mock` demo path (dev-only), routes `/auth/login`, `/auth/sign-up`, `/dashboard`, navbar/landing SPA links, TanStack Query keys scoped by mock vs live data source. **Done** — Root **`npm run dev`** using **`concurrently`** + **`run-script-os`** to start Vite and Uvicorn together for local full-stack development.
 2. **Integrate Clerk**: JWT validation middleware for FastAPI; production auth hardening. SPA shells: Clerk components on `/auth/login` and `/auth/sign-up`
 3. **Set up Supabase**: Database schema, storage buckets for videos/files
 4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, ~~auth shell (Clerk + mock demo)~~, ~~dashboard shell (mock/API hooks)~~, admin provisioning — Landing page complete with navbar, hero, stats, programmes, CTA, footer; authenticated dashboard shell lists resources/progress from fixtures or API per env
@@ -599,6 +607,14 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-05 v1.2.1
+- Status: In Development
+- Changes:
+  - Documented **local full-stack initialisation**: root **`package.json`**, **`npm install`** at repo root, **`npm run dev`** (Vite + Uvicorn via **`concurrently`** and OS-specific **`backend/.venv`** paths via **`run-script-os`**)
+  - Extended **Technical Specification** with **Local development (full-stack bootstrap)** and noted two-terminal alternative
+  - Updated **Implementation Guidance** (scaffold item) to mark root dev orchestration **Done**
+  - Aligned **[Setup Guide](../getting-started/setup.md)** and **[Development Workflow](../getting-started/development.md)** with root **`npm run dev`**, **`backend/.venv`**, **`pip install -e ".[dev]"`**, and health URL **`/api/v1/health`**
 
 ### 2026-04-05 v1.2
 - Status: In Development
