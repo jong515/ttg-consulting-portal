@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.2.1
+**Version**: 1.3.0
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-04-05
+**Last Updated**: 2026-04-17
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -426,6 +426,11 @@ interface UserContentAccess {
 - Primary CTA with clear links to services
 - Displays all visible products clearly
 - Fully responsive on desktop and mobile
+- Emphatic social proof + conversion layout sections:
+  - Community Q&A: horizontally scrolling Q&A cards with answer previews and “Join Free” CTA
+  - Students/Parents social proof: dark navy full-width “Join Over 555,000…” centered CTA
+  - Final features + CTA: split layout with feature rows and “Start Your Free Trial” button
+  - Multi-column footer: resources/platform/company/contact + social links; privacy/terms in bottom row
 
 **2. Auth Page** (single entry point)
 - Email + password fields
@@ -478,7 +483,7 @@ interface UserContentAccess {
 1. ~~**Scaffold frontend + backend**: Vite React app + FastAPI project with Docker setup~~ **Done** — Frontend scaffold complete (Vite, TanStack Router, TanStack Query, Tailwind CSS, shadcn/ui, typed API client, static mock data layer, ESLint). **Done** — Portal auth abstraction (`usePortalAuth`), `VITE_AUTH_MODE=mock` demo path (dev-only), routes `/auth/login`, `/auth/sign-up`, `/dashboard`, navbar/landing SPA links, TanStack Query keys scoped by mock vs live data source. **Done** — Root **`npm run dev`** using **`concurrently`** + **`run-script-os`** to start Vite and Uvicorn together for local full-stack development.
 2. **Integrate Clerk**: JWT validation middleware for FastAPI; production auth hardening. SPA shells: Clerk components on `/auth/login` and `/auth/sign-up`
 3. **Set up Supabase**: Database schema, storage buckets for videos/files
-4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, ~~auth shell (Clerk + mock demo)~~, ~~dashboard shell (mock/API hooks)~~, admin provisioning — Landing page complete with navbar, hero, stats, programmes, CTA, footer; authenticated dashboard shell lists resources/progress from fixtures or API per env
+4. **Build Phase 1** (TTA Consulting): ~~Landing page~~, ~~auth shell (Clerk + mock demo)~~, ~~dashboard shell (mock/API hooks)~~, admin provisioning — Landing page complete with navbar, hero, video samples carousel, community Q&A, social proof CTA, final features + CTA, stats, CTA, and redesigned multi-column footer; authenticated dashboard shell lists resources/progress from fixtures or API per env
 5. **Build Phase 2** (MapleBear): Parent dashboard, video library, consultant upload
 6. **Build Phase 3** (DSA Resources): Public content hub, purchase flow integration
 
@@ -607,6 +612,13 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-17 v1.3.0
+- Status: In Development
+- Changes:
+  - Updated landing page UX specs to reflect new conversion-focused sections (Community Q&A carousel, “Join Over 555,000…” social proof CTA, final features + CTA)
+  - Updated footer UX spec to a multi-column layout with social links and bottom-row legal links
+  - Updated Phase 1 implementation guidance to match current landing page composition (removed “programmes” section)
 
 ### 2026-04-05 v1.2.1
 - Status: In Development
