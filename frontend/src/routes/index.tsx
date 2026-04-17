@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/landing/hero-section';
+import { PrepLoungeSection } from '@/components/landing/prep-lounge-section';
+import { VideoSampleCarouselSection } from '@/components/landing/video-sample-carousel-section';
 import { StatsSection } from '@/components/landing/stats-section';
 import { ProgrammesSection } from '@/components/landing/programmes-section';
 import { CtaSection } from '@/components/landing/cta-section';
@@ -16,6 +18,8 @@ function LandingPage() {
       <Navbar />
       <main>
         <HeroSection />
+        <PrepLoungeSection />
+        <VideoSampleCarouselSection />
         <StatsSection />
         <ProgrammesSection />
         <CtaSection />

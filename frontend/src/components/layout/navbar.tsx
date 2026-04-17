@@ -16,54 +16,67 @@ export function Navbar() {
   const { isLoaded, isSignedIn, signOut } = usePortalAuth();
 
   return (
-    <nav className="sticky top-0 z-50 bg-brand-bg/95 backdrop-blur-sm border-b border-brand-border">
+    <nav className="sticky top-0 z-50 bg-brand-bg/90 backdrop-blur-md border-b border-brand-border">
       <div className="mx-auto max-w-[1200px] flex items-center justify-between px-6 h-16">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center text-white text-sm font-semibold tracking-tight">
-            TT
+          <div className="w-9 h-9 rounded-full bg-[#0B1B3A] flex items-center justify-center text-white text-sm font-semibold tracking-tight">
+            bg
           </div>
-          <span className="font-semibold text-brand-text group-hover:text-brand-accent transition-colors">
-            Think Teach Group
+          <span className="font-semibold text-[#0B1B3A] group-hover:opacity-80 transition-opacity">
+            beyondgrades
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#programmes"
-            className="text-sm text-brand-text-muted hover:text-brand-text transition-colors"
-          >
-            Programmes
-          </a>
+        <div className="hidden md:flex items-center justify-center gap-8 flex-1 px-8">
           <a
             href="#about"
-            className="text-sm text-brand-text-muted hover:text-brand-text transition-colors"
+            className="text-sm text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
           >
-            About
+            About us
           </a>
+          <a
+            href="#consult"
+            className="text-sm text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+          >
+            Consult us
+          </a>
+        </div>
+
+        <div className="hidden md:flex items-center gap-2">
           {!isLoaded ? (
-            <div className="relative h-9 w-28 rounded-md bg-brand-border/40">
+            <div className="relative h-9 w-40 rounded-md bg-brand-border/40">
               <span className="sr-only">Loading account</span>
             </div>
           ) : isSignedIn ? (
             <div className="flex items-center gap-2">
-              <Button variant="outline" asChild className="border-brand-border">
-                <Link to="/dashboard">Portal</Link>
+              <Button
+                asChild
+                variant="outline"
+                className="border-[#0B1B3A]/20 text-[#0B1B3A] hover:bg-[#0B1B3A]/5"
+              >
+                <Link to="/dashboard">Dashboard</Link>
               </Button>
               <Button
                 variant="ghost"
-                className="text-brand-text-muted hover:text-brand-text"
+                className="text-[#1E2A4A]/70 hover:text-[#0B1B3A]"
                 onClick={() => void signOut()}
               >
                 Sign out
               </Button>
             </div>
           ) : (
-            <Button
-              asChild
-              className="bg-brand-accent hover:bg-brand-accent/90 text-white"
-            >
-              <Link to="/auth/login">Sign in</Link>
-            </Button>
+            <>
+              <Button
+                asChild
+                variant="outline"
+                className="border-[#0B1B3A]/20 text-[#0B1B3A] hover:bg-[#0B1B3A]/5"
+              >
+                <Link to="/auth/login">Log In</Link>
+              </Button>
+              <Button asChild className="bg-[#0B1B3A] hover:bg-[#0B1B3A]/92 text-white">
+                <Link to="/auth/sign-up">Sign Up</Link>
+              </Button>
+            </>
           )}
         </div>
 
@@ -81,18 +94,18 @@ export function Navbar() {
             </SheetDescription>
             <div className="flex flex-col gap-2 pt-8 px-2">
               <a
-                href="#programmes"
-                onClick={() => setOpen(false)}
-                className="text-brand-text-muted hover:text-brand-text transition-colors py-3 px-3 rounded-lg hover:bg-brand-accent-light"
-              >
-                Programmes
-              </a>
-              <a
                 href="#about"
                 onClick={() => setOpen(false)}
                 className="text-brand-text-muted hover:text-brand-text transition-colors py-3 px-3 rounded-lg hover:bg-brand-accent-light"
               >
-                About
+                About us
+              </a>
+              <a
+                href="#consult"
+                onClick={() => setOpen(false)}
+                className="text-brand-text-muted hover:text-brand-text transition-colors py-3 px-3 rounded-lg hover:bg-brand-accent-light"
+              >
+                Consult us
               </a>
               {!isLoaded ? (
                 <div className="relative mt-4 h-10 rounded-md bg-brand-border/40">
@@ -102,7 +115,7 @@ export function Navbar() {
                 <div className="mt-4 flex flex-col gap-2">
                   <Button asChild variant="outline" className="border-brand-border">
                     <Link to="/dashboard" onClick={() => setOpen(false)}>
-                      Portal
+                      Dashboard
                     </Link>
                   </Button>
                   <Button
@@ -117,14 +130,21 @@ export function Navbar() {
                   </Button>
                 </div>
               ) : (
-                <Button
-                  asChild
-                  className="mt-4 bg-brand-accent hover:bg-brand-accent/90 text-white"
-                >
-                  <Link to="/auth/login" onClick={() => setOpen(false)}>
-                    Sign in
-                  </Link>
-                </Button>
+                <div className="mt-4 grid gap-2">
+                  <Button asChild variant="outline" className="border-brand-border">
+                    <Link to="/auth/login" onClick={() => setOpen(false)}>
+                      Log In
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    className="bg-[#0B1B3A] hover:bg-[#0B1B3A]/92 text-white"
+                  >
+                    <Link to="/auth/sign-up" onClick={() => setOpen(false)}>
+                      Sign Up
+                    </Link>
+                  </Button>
+                </div>
               )}
             </div>
           </SheetContent>
