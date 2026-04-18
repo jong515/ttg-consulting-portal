@@ -28,18 +28,18 @@ export function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center justify-center gap-8 flex-1 px-8">
-          <a
-            href="#about"
+          <Link
+            to="/about"
             className="text-sm text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
           >
             About us
-          </a>
-          <a
-            href="#consult"
+          </Link>
+          <Link
+            to="/consult"
             className="text-sm text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
           >
             Consult us
-          </a>
+          </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-2">
@@ -93,20 +93,20 @@ export function Navbar() {
               Site navigation links
             </SheetDescription>
             <div className="flex flex-col gap-2 pt-8 px-2">
-              <a
-                href="#about"
+              <Link
+                to="/about"
                 onClick={() => setOpen(false)}
                 className="text-brand-text-muted hover:text-brand-text transition-colors py-3 px-3 rounded-lg hover:bg-brand-accent-light"
               >
                 About us
-              </a>
-              <a
-                href="#consult"
+              </Link>
+              <Link
+                to="/consult"
                 onClick={() => setOpen(false)}
                 className="text-brand-text-muted hover:text-brand-text transition-colors py-3 px-3 rounded-lg hover:bg-brand-accent-light"
               >
                 Consult us
-              </a>
+              </Link>
               {!isLoaded ? (
                 <div className="relative mt-4 h-10 rounded-md bg-brand-border/40">
                   <span className="sr-only">Loading account</span>
