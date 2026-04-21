@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - Deployment Guide
 
-**Last Updated**: 2026-03-28
+**Last Updated**: 2026-04-21
 **Status**: Draft
 
 ---
@@ -25,6 +25,33 @@
 - Debug logging enabled
 
 **Database**: Supabase project (dev instance)
+
+---
+
+### Preview / static frontend (Vercel)
+
+**Purpose**: Temporary or marketing UI hosting; **frontend only** (no FastAPI on Vercel in the default setup).
+
+**URLs**: `https://<project>.vercel.app` (and per-deployment preview URLs when using Git integration).
+
+**Configuration**:
+- **Root Directory**: `frontend` (repo root `package.json` is orchestration-only; the SPA lives under `frontend/`).
+- **Build**: `npm run build` → output directory **`dist`**.
+- **Routing**: `frontend/vercel.json` rewrites all paths to `/index.html` so TanStack Router client-side routes work on refresh and deep links.
+- **Node**: `frontend/package.json` **`engines.node`** should meet the SPA toolchain (Vercel honours `engines` for the build image).
+- **Environment variables** (Project → Settings → Environment Variables): set for **Production** and **Preview** as needed. **`VITE_*` are embedded at build time** — trigger a new deployment after any change.
+  - **Without Clerk (UI preview only)**: `VITE_AUTH_MODE=public` — demo sign-in and fixture data; not real authentication.
+  - **With Clerk**: `VITE_CLERK_PUBLISHABLE_KEY` and Clerk dashboard URLs for this deployment’s origins; omit `VITE_AUTH_MODE` or use Clerk as in local docs.
+  - **With a hosted API**: `VITE_API_BASE_URL` (full base including `/api/v1`). On the **FastAPI** side, set **`FRONTEND_URL`** to this SPA’s exact origin (e.g. `https://your-app.vercel.app`) so CORS allows browser calls. A single `FRONTEND_URL` matches one origin; preview deployments may use different subdomains unless CORS is extended later.
+
+**CLI (optional)**:
+```bash
+cd frontend
+npm install
+npx vercel
+```
+
+`.vercel/` link metadata should remain gitignored (see repo root `.gitignore`).
 
 ---
 
@@ -61,10 +88,10 @@
 
 ## Infrastructure
 
-**Hosting**: TBD (Docker-based — Railway, Fly.io, AWS ECS, GCP Cloud Run)
+**Hosting**: TBD for full stack (Docker-based — Railway, Fly.io, AWS ECS, GCP Cloud Run). **Frontend-only previews** may use **Vercel** (see *Preview / static frontend (Vercel)* above).
 
 **Components**:
-- Frontend: Static SPA served via CDN or container
+- Frontend: Static SPA served via CDN or container (including optional Vercel static deploy)
 - Backend: FastAPI in Docker container
 - Database: Supabase managed PostgreSQL
 - File storage: Supabase Storage
@@ -126,8 +153,13 @@ docker push ghcr.io/[org]/ttg-portal-backend:latest
 
 ## Environment Variables
 
-### Frontend (`.env.local`)
+### Frontend (`.env.local` or Vercel env)
 ```bash
+# Auth: omit or clerk (default) — requires VITE_CLERK_PUBLISHABLE_KEY for real Clerk.
+# mock = local dev only (rejected in production builds).
+# public = production-allowed demo auth for static previews (e.g. Vercel) without Clerk.
+VITE_AUTH_MODE=
+
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 VITE_API_BASE_URL=http://localhost:8000/api/v1
 ```
@@ -139,7 +171,7 @@ SUPABASE_SERVICE_KEY=eyJ...
 CLERK_JWKS_URL=https://[clerk-instance].clerk.accounts.dev/.well-known/jwks.json
 CLERK_ISSUER=https://[clerk-instance].clerk.accounts.dev
 CLERK_AUDIENCE=                         # Optional in dev; required in staging/production
-FRONTEND_URL=http://localhost:5173      # CORS origin
+FRONTEND_URL=http://localhost:5173      # CORS origin — use exact SPA URL when frontend is on Vercel (e.g. https://app.vercel.app)
 LOG_LEVEL=INFO
 ENVIRONMENT=development                 # development | staging | production
 ```

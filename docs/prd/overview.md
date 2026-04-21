@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.3.0
+**Version**: 1.4.0
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-04-17
+**Last Updated**: 2026-04-21
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -42,7 +42,7 @@ This PRD is a living document that will evolve during development:
 
 - **Performance**: Screen transitions <2s, API responses <500ms
 - **Security**: PII encrypted in transit (HTTPS) and at rest. Clerk JWT validation on all protected routes
-- **Development demos**: The SPA may run a **frontend-only mock auth** path in local development (`VITE_AUTH_MODE=mock`) with static fixture data and **no** Clerk session; production builds **must not** ship this mode (enforced at app init). Mock mode does not replace Clerk for staging or production users
+- **Development demos**: The SPA may run a **frontend-only mock auth** path in local development (`VITE_AUTH_MODE=mock`) with static fixture data and **no** Clerk session; production builds **reject** `mock` (enforced at app init). **Hosted UI previews** without Clerk may use **`VITE_AUTH_MODE=public`** (e.g. temporary Vercel deploys): same demo auth and fixture data as mock, explicitly labelled in the UI; **not** a substitute for Clerk for real users, staging acceptance, or security review parity
 - **Accessibility**: WCAG 2.1 AA minimum
 - **Scalability**: Support 1,000+ concurrent users, horizontal scaling capability
 - **Platform**: Responsive web application optimized for mobile and desktop browsers
@@ -199,7 +199,7 @@ And no login is required
 
 **Authentication**: Clerk handles all auth (sign-up, sign-in, password reset, session management). No self-serve sign-up for TTA consulting portal — accounts are admin-provisioned only. MapleBear parents can self-register.
 
-**Local demo / UX prototyping (non-production)**: For stakeholder walkthroughs without Clerk or a running API, the React app supports **`VITE_AUTH_MODE=mock`** (development only): in-memory “sign in”, shared `usePortalAuth()` abstraction, and static resource/progress fixtures (no FastAPI calls). This path is explicitly **out of scope** for production, staging acceptance, or security review parity with Clerk.
+**Local demo / UX prototyping**: For stakeholder walkthroughs without Clerk or a running API, the React app supports **`VITE_AUTH_MODE=mock`** (development builds only): in-memory “sign in”, shared `usePortalAuth()` abstraction, and static resource/progress fixtures (no FastAPI calls). **`VITE_AUTH_MODE=public`** enables the **same** demo behaviour in **production builds** (e.g. static hosting on Vercel when Clerk is not configured yet); copy must state preview-only, no real accounts. Neither `mock` nor `public` replaces Clerk for staging acceptance, production users, or security review parity with Clerk.
 
 **Content Access**: Strictly scoped — users only see content their account is provisioned for. Videos play in-browser. Resources remain accessible indefinitely (one-time purchase, lifetime access).
 
@@ -269,14 +269,17 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 
 | Mode | Configuration | Runtime behaviour |
 |------|---------------|-------------------|
-| **Clerk (default)** | `VITE_AUTH_MODE` unset or any value other than `mock` (after normalisation); `VITE_CLERK_PUBLISHABLE_KEY` required | `ClerkProvider` plus a thin bridge into a shared portal auth context; `getToken()` supplies JWT for `apiFetch` |
-| **Mock (local demo)** | `VITE_AUTH_MODE=mock` (case-insensitive); **rejected** when the app is built/served as production (`import.meta.env.PROD`) | `MockAuthProvider` only; demo action on `/auth/login`; `/dashboard` shows static lists; fixture data is also used in dev when the API base URL is unset |
+| **Clerk (default)** | `VITE_AUTH_MODE` unset, or any value other than `mock` / `public` (after normalisation); `VITE_CLERK_PUBLISHABLE_KEY` required | `ClerkProvider` plus a thin bridge into a shared portal auth context; `getToken()` supplies JWT for `apiFetch` |
+| **Mock (local demo)** | `VITE_AUTH_MODE=mock` (case-insensitive); **rejected** in production builds (`import.meta.env.PROD`) | `MockAuthProvider` only; demo action on `/auth/login`; `/dashboard` shows static lists; fixture data when API base URL is unset or mode is mock |
+| **Public (hosted preview)** | `VITE_AUTH_MODE=public` (case-insensitive); **allowed** in production builds | Same as mock for auth and fixture data; login UI labelled as preview; use for temporary static hosts (e.g. Vercel) **without** Clerk |
 
-**SPA routes (Phase 1 shell):** `/` (landing), `/auth/login` (Clerk embedded sign-in or mock demo), `/auth/sign-up` (Clerk only; in mock mode redirect to login), `/dashboard` (post-login resource shell; redirects to login if unauthenticated).
+**SPA routes (Phase 1 shell):** `/` (landing), `/auth/login` (Clerk embedded sign-in or demo flow for mock/public), `/auth/sign-up` (Clerk only; in mock/public redirect to login), `/dashboard` (post-login resource shell; redirects to login if unauthenticated).
 
 **Client data loading:** TanStack Query keys for resources and progress include a **`mock` vs `live`** segment so switching fixture vs API source during development does not reuse stale cached rows.
 
 **Deployment:**
+- **Frontend (optional / temporary)**: Static SPA on **Vercel** — set project **Root Directory** to `frontend`, output `dist`, `npm run build`; `frontend/vercel.json` rewrites all paths to `index.html` for TanStack Router; `package.json` **`engines.node`** should satisfy toolchain requirements; set env vars in Vercel (see [Deployment & Environments](../deployment/environments.md)). **`VITE_*` variables are inlined at build time** — redeploy after changing them.
+- **Backend**: Not run as part of a default Vercel static deploy; host FastAPI separately when the API is required, and set **`FRONTEND_URL`** on the API to the SPA origin for CORS.
 - Docker images pushed to GitHub Container Registry (GHCR)
 - GitHub Actions CI/CD (lint, type-check via Pyright/tsc, tests, image build)
 
@@ -439,7 +442,7 @@ interface UserContentAccess {
 - No self-serve sign-up option (admin-only account creation for TTA)
 - TTA/consulting portal branding
 - Responsive across desktop and mobile
-- **Local mock mode only**: a labelled prototype control (e.g. “Continue as test parent”) replaces real credentials; copy must state that no real session is created
+- **Mock / public demo only**: a labelled prototype control (e.g. “Continue as test parent”) replaces real credentials; copy must state no real session (local **Demo mode** vs hosted **Preview** per `VITE_AUTH_MODE`)
 
 **3. Content Dashboard** (authenticated)
 - Personalized greeting ("Welcome back, [First Name]")
@@ -519,7 +522,7 @@ interface UserContentAccess {
 - [ ] User role/permission checks
 - [ ] Video metadata validation
 - [ ] Feedback character limit enforcement
-- [ ] (Optional, when Vitest is added) Frontend `VITE_AUTH_MODE` / mock-vs-live data source helpers — case normalisation and alignment with `getAuthMode()`
+- [ ] (Optional, when Vitest is added) Frontend `VITE_AUTH_MODE` / mock-vs-live data source helpers — case normalisation and alignment with `getAuthMode()` (`mock`, `public`, `clerk`)
 
 ### Integration Tests
 - [ ] Auth flow: Clerk JWT -> FastAPI validation -> user profile response
@@ -534,6 +537,7 @@ interface UserContentAccess {
 
 ### Manual Verification
 - [ ] **Dev demo (mock mode)**: With `VITE_AUTH_MODE=mock` and no Clerk key, open `/`, navigate to `/auth/login`, complete demo sign-in, confirm `/dashboard` shows static resource cards without calling the backend
+- [ ] **Hosted preview (public mode)**: With a production build using `VITE_AUTH_MODE=public` (e.g. on Vercel), confirm landing loads, `/auth/login` shows Preview copy and demo sign-in, `/dashboard` works without Clerk
 - [ ] **Dev demo (case normalisation)**: With `VITE_AUTH_MODE=Mock` (mixed case) and `VITE_API_BASE_URL` set, confirm dashboard still uses fixture data (no failing API calls)
 - [ ] **Clerk mode**: With valid Clerk publishable key, `/auth/login` shows Clerk sign-in; after sign-in, user reaches `/dashboard`; sign-out clears session and navbar returns to “Sign in”
 - [ ] **AC: Auth Page**: Login, failed login, forgot password all work
@@ -612,6 +616,14 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-21 v1.4.0
+- Status: In Development
+- Changes:
+  - Documented **`VITE_AUTH_MODE=public`** for production/static-hosted UI previews without Clerk (vs dev-only `mock`)
+  - Updated **Non-Functional**, **Functional**, **Technical Specification** (auth modes table, SPA route wording), **UX** auth notes, and **Testing Strategy** (manual public-mode check)
+  - Documented optional **Vercel** frontend deployment (root `frontend/`, SPA rewrites, build-time `VITE_*`, separate API hosting + `FRONTEND_URL` for CORS)
+  - Aligned **[Deployment & Environments](../deployment/environments.md)** with Vercel preview workflow and env vars
 
 ### 2026-04-17 v1.3.0
 - Status: In Development

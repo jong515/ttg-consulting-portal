@@ -1,13 +1,13 @@
 import { SignUp } from '@clerk/react';
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router';
-import { getAuthMode } from '@/auth/env';
+import { getAuthMode, usesDemoAuthProvider } from '@/auth/env';
 
 export const Route = createFileRoute('/auth/sign-up')({
   component: SignUpPage,
 });
 
 function SignUpPage() {
-  if (getAuthMode() === 'mock') {
+  if (usesDemoAuthProvider(getAuthMode())) {
     return <Navigate to="/auth/login" replace />;
   }
 
