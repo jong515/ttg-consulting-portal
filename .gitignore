@@ -39,3 +39,6 @@ htmlcov/
 
 # Docker
 *.log
+
+# Vercel (CLI link metadata; do not commit)
+.vercel/
