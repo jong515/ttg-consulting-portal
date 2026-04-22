@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import secrets
 import time
 from dataclasses import dataclass, field
 
@@ -126,3 +127,20 @@ def get_supabase(
     _user: ClerkUser = Depends(get_current_user),  # noqa: ARG001
 ) -> Client:
     return get_supabase_client()
+
+
+def require_dev_bearer_auth(request: Request) -> None:
+    if not settings.allow_dev_bearer_auth:
+        return
+
+    if not settings.dev_bearer_token:
+        logger.error("Dev bearer auth enabled but DEV_BEARER_TOKEN is not configured")
+        raise HTTPException(status_code=503, detail="Dev authentication is not configured")
+
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing authorization header")
+
+    token = auth_header.removeprefix("Bearer ")
+    if not secrets.compare_digest(token, settings.dev_bearer_token):
+        raise HTTPException(status_code=401, detail="Invalid token")

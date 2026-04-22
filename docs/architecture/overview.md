@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - System Architecture
 
-**Last Updated**: 2026-03-28
+**Last Updated**: 2026-04-22
 **Status**: Draft
 
 ---
@@ -100,6 +100,7 @@ backend/tests/         # pytest + httpx async tests
 - Pydantic schemas for all request/response validation
 - All responses use `ApiResponse[T]` envelope (`data` + `error` fields)
 - Supabase client injected via dependency injection (service role key — see Security note below)
+- Development/testing can use a temporary **dev bearer token** gate (no Clerk linkage) to protect endpoints while auth is still being integrated
 
 ---
 
@@ -125,6 +126,10 @@ backend/tests/         # pytest + httpx async tests
 - Malformed JWKS responses, missing `sub` claims, and unexpected errors all produce clean 401 responses
 
 **Audience Verification**: Optional in development (`CLERK_AUDIENCE` unset skips `aud` check). Must be configured in staging/production to prevent cross-client token acceptance.
+
+**Development/Testing Auth (Temporary):**
+- When `ALLOW_DEV_BEARER_AUTH=true`, selected endpoints require `Authorization: Bearer <DEV_BEARER_TOKEN>`
+- Intended for local development only while Clerk linkage is in progress
 
 **Supabase Service Role Key**: The current scaffold uses the Supabase service role key (bypasses RLS) for all authenticated requests. Each future endpoint **must** manually scope queries by `clerk_id`. Per-user Supabase JWTs for full RLS enforcement are planned for a later phase.
 

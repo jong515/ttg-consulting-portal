@@ -15,5 +15,10 @@ def get_client() -> Client:
                 "SUPABASE_URL and SUPABASE_SERVICE_KEY must be set. "
                 "Copy .env.example to .env and fill in the values."
             )
-        _client = create_client(settings.supabase_url, settings.supabase_service_key)
+        url = settings.supabase_url.strip()
+        if url.endswith("/rest/v1"):
+            url = url.removesuffix("/rest/v1")
+        if url.endswith("/rest/v1/"):
+            url = url.removesuffix("/rest/v1/")
+        _client = create_client(url, settings.supabase_service_key)
     return _client

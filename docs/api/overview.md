@@ -3,14 +3,17 @@
 ## TTG Consulting Portal API
 
 **Version**: 1.0
-**Last Updated**: 2026-03-28
+**Last Updated**: 2026-04-22
 **Status**: Draft
 
 ---
 
 ## Overview
 
-RESTful API built with FastAPI (Python >=3.10). All protected endpoints require a valid Clerk JWT.
+RESTful API built with FastAPI (Python >=3.10).
+
+- Production/staging intent: protected endpoints require a valid **Clerk JWT**
+- Development/testing: some endpoints may be protected by a temporary **dev bearer token** gate (no Clerk linkage yet)
 
 **Base URL**:
 - Development: `http://localhost:8000/api/v1`
@@ -23,6 +26,7 @@ RESTful API built with FastAPI (Python >=3.10). All protected endpoints require 
 
 ## Authentication
 
+### Clerk JWT (planned default)
 **Method**: Clerk JWT (Bearer token)
 
 **Header**:
@@ -37,6 +41,16 @@ Authorization: Bearer <clerk-jwt>
 **Audience verification**: When `CLERK_AUDIENCE` is configured, the `aud` claim is verified. In development (unset), audience verification is skipped.
 
 **Session**: 7-day persistence unless user logs out.
+
+### Dev bearer token (temporary, development/testing only)
+When enabled via backend env:
+- `ALLOW_DEV_BEARER_AUTH=true`
+- `DEV_BEARER_TOKEN=...`
+
+Protected endpoints require:
+```
+Authorization: Bearer <DEV_BEARER_TOKEN>
+```
 
 ---
 
@@ -185,6 +199,49 @@ GET    /api/v1/health              # Health check (no auth)
     "status": "ok",
     "version": "0.1.0",
     "environment": "development"
+  },
+  "error": null
+}
+```
+
+### Resources (PDF downloads via Supabase Storage)
+
+```
+GET    /api/v1/resources                 # List resource metadata (paginated)
+GET    /api/v1/resources/{id}/url        # Generate signed download URL (15 min)
+```
+
+**Authentication**:
+- In development/testing, these endpoints may require the **dev bearer token** (see above).
+
+**Query Parameters** (GET `/api/v1/resources`):
+- `limit` — Items per page (default: 50, max: 100)
+- `offset` — Offset (default: 0)
+
+**Response** (GET `/api/v1/resources`, 200):
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "title": "string",
+      "description": "string",
+      "category": "string",
+      "is_paid": true,
+      "sort_order": 0,
+      "created_at": "2026-04-22T11:30:00.200761Z"
+    }
+  ],
+  "error": null
+}
+```
+
+**Response** (GET `/api/v1/resources/{id}/url`, 200):
+```json
+{
+  "data": {
+    "url": "https://<supabase-project>.supabase.co/storage/v1/object/sign/<bucket>/<path>?token=...",
+    "expires_in": 900
   },
   "error": null
 }

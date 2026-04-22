@@ -38,15 +38,21 @@ class HealthResponse(BaseModel):
 class ResourceOut(BaseModel):
     id: str
     title: str
-    type: str
-    topic: str
-    topic_label: str
     description: str
-    duration: str
-    thumbnail_url: str | None = None
-    content_url: str | None = None
+    category: str
+    is_paid: bool
+    sort_order: int
     created_at: datetime
-    updated_at: datetime
+
+
+class ResourceStorageMeta(BaseModel):
+    bucket: str
+    file_path: str
+
+
+class SignedUrlOut(BaseModel):
+    url: str
+    expires_in: int
 
 
 class ResourceProgressOut(BaseModel):
