@@ -61,6 +61,22 @@ def _find_matching_key(keys: list[dict[str, object]], token: str) -> object:
 
 
 async def get_current_user(request: Request) -> ClerkUser:
+    # Dev-only bypass: allow a fixed bearer token to stand in for Clerk JWTs locally.
+    # This is intentionally gated by both ENVIRONMENT and an explicit flag.
+    auth_header = request.headers.get("Authorization")
+    if (
+        settings.is_development
+        and settings.allow_dev_bearer_auth
+        and settings.dev_bearer_token
+        and auth_header == f"Bearer {settings.dev_bearer_token}"
+    ):
+        return ClerkUser(
+            clerk_id="dev-user",
+            email="dev-user@example.local",
+            first_name="Dev",
+            last_name="User",
+        )
+
     if not settings.clerk_jwks_url or not settings.clerk_issuer:
         logger.error("Clerk authentication is not configured")
         raise HTTPException(
@@ -68,7 +84,6 @@ async def get_current_user(request: Request) -> ClerkUser:
             detail="Authentication service unavailable",
         )
 
-    auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing authorization header")
 
@@ -111,12 +126,12 @@ async def get_current_user(request: Request) -> ClerkUser:
     except httpx.HTTPError:
         logger.exception("Failed to fetch JWKS")
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-    except ValueError:
-        logger.exception("JWKS response validation failed")
-        raise HTTPException(status_code=401, detail="Authentication service error")
     except ValidationError:
         logger.exception("JWT claims failed schema validation")
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    except ValueError:
+        logger.exception("JWKS response validation failed")
+        raise HTTPException(status_code=401, detail="Authentication service error")
     except Exception:
         logger.exception("Unexpected error during authentication")
         raise HTTPException(status_code=401, detail="Authentication failed")
@@ -125,4 +140,14 @@ async def get_current_user(request: Request) -> ClerkUser:
 def get_supabase(
     _user: ClerkUser = Depends(get_current_user),  # noqa: ARG001
 ) -> Client:
+    return get_supabase_client()
+
+
+def get_supabase_public() -> Client:
+    """
+    Supabase client without auth requirements.
+
+    Use only for endpoints that are truly public (e.g. health checks, public resources,
+    or dev-only diagnostics). Paid/protected endpoints should depend on `get_supabase`.
+    """
     return get_supabase_client()

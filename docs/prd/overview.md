@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.4.0
+**Version**: 1.4.1
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-04-21
+**Last Updated**: 2026-04-24
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -43,6 +43,7 @@ This PRD is a living document that will evolve during development:
 - **Performance**: Screen transitions <2s, API responses <500ms
 - **Security**: PII encrypted in transit (HTTPS) and at rest. Clerk JWT validation on all protected routes
 - **Development demos**: The SPA may run a **frontend-only mock auth** path in local development (`VITE_AUTH_MODE=mock`) with static fixture data and **no** Clerk session; production builds **reject** `mock` (enforced at app init). **Hosted UI previews** without Clerk may use **`VITE_AUTH_MODE=public`** (e.g. temporary Vercel deploys): same demo auth and fixture data as mock, explicitly labelled in the UI; **not** a substitute for Clerk for real users, staging acceptance, or security review parity
+- **Backend dev diagnostics (development only)**: The API may expose dev-only endpoints to validate Supabase Storage connectivity (public vs paid buckets) and may enable a dev-only bearer token auth bypass for local testing. These must not be enabled in staging/production.
 - **Accessibility**: WCAG 2.1 AA minimum
 - **Scalability**: Support 1,000+ concurrent users, horizontal scaling capability
 - **Platform**: Responsive web application optimized for mobile and desktop browsers
@@ -290,6 +291,7 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 - **`npm run dev`** from the root starts **both** processes: **Vite** in `frontend/` and **Uvicorn** for **`app.main:app`** with **`--reload`**, with working directory **`backend/`** so the `app` package resolves.
 - The API process uses Python from **`backend/.venv`**: **`run-script-os`** selects **`Scripts\python.exe`** on Windows and **`bin/python`** on macOS/Linux.
 - **Prerequisites** before `npm run dev`: create **`backend/.venv`**, run **`pip install -e ".[dev]"`** from `backend/`, configure **`frontend/.env.local`** and **`backend/.env`** per each folder’s **`.env.example`**. Developers may still run **`npm run dev`** only in `frontend/` and **`uvicorn app.main:app --reload`** only in `backend/` if they prefer two terminals.
+- For local development, the backend may load configuration from **`backend/.env.local`** (preferred) with **`backend/.env`** as a fallback.
 
 ### API Endpoints (Phase 1 — TTA Consulting)
 
@@ -540,6 +542,7 @@ interface UserContentAccess {
 - [ ] **Hosted preview (public mode)**: With a production build using `VITE_AUTH_MODE=public` (e.g. on Vercel), confirm landing loads, `/auth/login` shows Preview copy and demo sign-in, `/dashboard` works without Clerk
 - [ ] **Dev demo (case normalisation)**: With `VITE_AUTH_MODE=Mock` (mixed case) and `VITE_API_BASE_URL` set, confirm dashboard still uses fixture data (no failing API calls)
 - [ ] **Clerk mode**: With valid Clerk publishable key, `/auth/login` shows Clerk sign-in; after sign-in, user reaches `/dashboard`; sign-out clears session and navbar returns to “Sign in”
+- [ ] **Backend storage smoke test (dev-only)**: With `ENVIRONMENT=development` and Supabase configured, confirm the API can produce a public URL for a public bucket path and a signed URL for a paid bucket path via dev-only endpoints under `/api/v1/dev/storage/*`. If dev bearer auth is enabled, confirm paid endpoints require `Authorization: Bearer <DEV_BEARER_TOKEN>`.
 - [ ] **AC: Auth Page**: Login, failed login, forgot password all work
 - [ ] **AC: Content Dashboard**: Shows only provisioned content
 - [ ] **AC: Video Library**: Parent sees only own child's videos
@@ -616,6 +619,12 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-24 v1.4.1
+- Status: In Development
+- Changes:
+  - Documented backend **dev-only** Supabase Storage connectivity checks (public vs paid buckets) and optional dev bearer auth bypass for local testing
+  - Noted backend configuration may load from `backend/.env.local` (preferred) with `.env` fallback in local development
 
 ### 2026-04-21 v1.4.0
 - Status: In Development
