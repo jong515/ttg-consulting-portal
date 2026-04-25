@@ -5,6 +5,8 @@ export type ContentTopic =
   | 'interview-preparation'
   | 'timelines-deadlines';
 
+export type ResourceAccess = 'public' | 'paid';
+
 export interface Resource {
   id: string;
   title: string;
@@ -12,6 +14,9 @@ export interface Resource {
   topic: ContentTopic;
   description: string;
   duration: string;
+  access?: ResourceAccess;
+  bucket?: string;
+  filePath?: string;
   thumbnailUrl?: string;
   contentUrl?: string;
   createdAt: string;
