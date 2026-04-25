@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { usePortalAuth } from '@/auth/auth-context';
 import { useResourceProgress } from '@/hooks/use-resource-progress';
 import { useResources } from '@/hooks/use-resources';
+import { getPublicStorageUrl } from '@/lib/api';
 import { TOPIC_LABELS } from '@/lib/mock-data';
 
 export const Route = createFileRoute('/dashboard/resources')({
@@ -12,6 +15,8 @@ export const Route = createFileRoute('/dashboard/resources')({
 function DashboardResourcesPage() {
   const { resources, isLoading: resourcesLoading, error: resourcesError } = useResources();
   const { progress, isLoading: progressLoading, error: progressError } = useResourceProgress();
+  const { getToken } = usePortalAuth();
+  const [openingId, setOpeningId] = useState<string | null>(null);
 
   const progressById = new Map(progress.map((p) => [p.resourceId, p]));
   const loading = resourcesLoading || progressLoading;
@@ -47,6 +52,9 @@ function DashboardResourcesPage() {
             {resources.map((resource) => {
               const p = progressById.get(resource.id);
               const topicLabel = TOPIC_LABELS[resource.topic];
+              const isPdf = resource.type === 'pdf';
+              const isPublic = resource.access !== 'paid';
+              const canOpenPublic = Boolean(isPdf && isPublic && resource.bucket && resource.filePath);
               return (
                 <li
                   key={resource.id}
@@ -62,8 +70,37 @@ function DashboardResourcesPage() {
                   <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
                     {resource.description}
                   </p>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <span className="text-xs text-muted-foreground">{resource.duration}</span>
+                    {canOpenPublic && (
+                      <Button
+                        size="sm"
+                        className="bg-brand-accent hover:bg-brand-accent/90 text-white"
+                        disabled={openingId === resource.id}
+                        onClick={() => {
+                          if (!resource.bucket || !resource.filePath) return;
+                          setOpeningId(resource.id);
+                          void getPublicStorageUrl(
+                            { bucket: resource.bucket, path: resource.filePath },
+                            getToken,
+                          )
+                            .then((data) => {
+                              window.open(data.url, '_blank', 'noopener,noreferrer');
+                            })
+                            .catch((e: unknown) => {
+                              const message = e instanceof Error ? e.message : 'Failed to open PDF';
+                              window.alert(message);
+                            })
+                            .finally(() => {
+                              setOpeningId((prev) => (prev === resource.id ? null : prev));
+                            });
+                        }}
+                      >
+                        {openingId === resource.id ? 'Opening…' : 'View'}
+                      </Button>
+                    )}
+                  </div>
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                    <span>{resource.duration}</span>
                     {p?.completed ? (
                       <span className="font-medium text-primary">Completed</span>
                     ) : p?.lastAccessedAt ? (

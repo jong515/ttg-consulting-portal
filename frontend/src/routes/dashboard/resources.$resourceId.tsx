@@ -1,0 +1,221 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo } from 'react';
+import { usePortalAuth } from '@/auth/auth-context';
+import { Button } from '@/components/ui/button';
+import { apiFetchBlob, getPublicStorageUrl } from '@/lib/api';
+import { useResources } from '@/hooks/use-resources';
+
+export const Route = createFileRoute('/dashboard/resources/$resourceId')({
+  component: ResourceDetailPage,
+});
+
+function ResourceDetailPage() {
+  const { resourceId } = Route.useParams();
+  const { resources } = useResources();
+  const { getToken, tier } = usePortalAuth();
+
+  const resource = useMemo(() => resources.find((r) => r.id === resourceId) ?? null, [resources, resourceId]);
+
+  const canAccess = resource ? tier === 'paid' || resource.access !== 'paid' : false;
+
+  const publicUrlQuery = useQuery({
+    enabled: Boolean(
+      resource &&
+        canAccess &&
+        resource.type === 'pdf' &&
+        resource.access !== 'paid' &&
+        resource.bucket &&
+        resource.filePath,
+    ),
+    queryKey: ['resource-public-url', resourceId],
+    queryFn: async () => {
+      if (!resource?.bucket || !resource.filePath) {
+        throw new Error('Missing storage location for this resource');
+      }
+      return getPublicStorageUrl({ bucket: resource.bucket, path: resource.filePath }, getToken);
+    },
+  });
+
+  const paidBlobQuery = useQuery({
+    enabled: Boolean(resource && canAccess && resource.type === 'pdf' && resource.bucket && resource.filePath),
+    queryKey: ['resource-paid-blob', resourceId, tier],
+    queryFn: async () => {
+      if (!resource?.bucket || !resource.filePath) {
+        throw new Error('Missing storage location for this resource');
+      }
+
+      const encodedBucket = encodeURIComponent(resource.bucket);
+      const encodedPath = encodeURIComponent(resource.filePath);
+
+      if (resource.access !== 'paid') {
+        // Public resources should be loaded via the public URL endpoint.
+        return null;
+      }
+
+      const endpoint = `/dev/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`;
+
+      return apiFetchBlob(endpoint, getToken);
+    },
+  });
+
+  const blobUrl = useMemo(() => {
+    if (!paidBlobQuery.data) return null;
+    if (!(paidBlobQuery.data instanceof Blob)) return null;
+    return URL.createObjectURL(paidBlobQuery.data);
+  }, [paidBlobQuery.data]);
+  useEffect(() => {
+    if (!blobUrl) return;
+    return () => URL.revokeObjectURL(blobUrl);
+  }, [blobUrl]);
+
+  const publicObjectUrl = publicUrlQuery.data?.url ?? null;
+  const canOpenInNewTab = Boolean(publicObjectUrl || blobUrl);
+
+  const backendDownloadUrl = useMemo(() => {
+    if (!resource?.bucket || !resource.filePath) return null;
+    const encodedBucket = encodeURIComponent(resource.bucket);
+    const encodedPath = encodeURIComponent(resource.filePath);
+    const path =
+      resource.access === 'paid'
+        ? `/dev/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`
+        : `/dev/storage/public-download?bucket=${encodedBucket}&path=${encodedPath}`;
+    const base = import.meta.env.VITE_API_BASE_URL ?? '';
+    return base ? `${base}${path}` : null;
+  }, [resource]);
+
+  if (!resource) {
+    return (
+      <main className="flex-1 px-6 py-8 md:px-10 md:py-10">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <p className="text-sm text-muted-foreground">Resource not found.</p>
+          <Button variant="outline" asChild>
+            <Link to="/dashboard/resources">Back to resources</Link>
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  if (!canAccess) {
+    return (
+      <main className="flex-1 px-6 py-8 md:px-10 md:py-10">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <h1 className="font-serif text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+            {resource.title}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            This resource is part of Course 2 (Paid). Sign in with the paid login to unlock it.
+          </p>
+          <Button variant="outline" asChild>
+            <Link to="/dashboard/resources">Back to resources</Link>
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="flex-1 px-6 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="font-serif text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+              {resource.title}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">{resource.description}</p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/dashboard/resources">Back</Link>
+            </Button>
+            {canOpenInNewTab && (
+              <Button asChild className="bg-brand-accent hover:bg-brand-accent/90 text-white">
+                <a href={publicObjectUrl ?? blobUrl ?? '#'} target="_blank" rel="noreferrer">
+                  Open in new tab
+                </a>
+              </Button>
+            )}
+          </div>
+        </header>
+
+        {resource.type !== 'pdf' && (
+          <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            This detail page currently supports PDFs only.
+          </div>
+        )}
+
+        {resource.type === 'pdf' && (
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            {(publicUrlQuery.isLoading || paidBlobQuery.isLoading) && (
+              <div className="p-6 text-sm text-muted-foreground">Preparing your document…</div>
+            )}
+            {(publicUrlQuery.error || paidBlobQuery.error) && (
+              <div className="p-6 text-sm text-destructive" role="alert">
+                {publicUrlQuery.error instanceof Error
+                  ? publicUrlQuery.error.message
+                  : paidBlobQuery.error instanceof Error
+                    ? paidBlobQuery.error.message
+                    : 'Failed to load PDF'}
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Tip: ensure <span className="font-mono">VITE_API_BASE_URL</span> points at your backend (usually{' '}
+                  <span className="font-mono">http://127.0.0.1:8000/api/v1</span> when running <span className="font-mono">npm run dev</span>).
+                </div>
+              </div>
+            )}
+            {publicObjectUrl && (
+              <iframe title={resource.title} src={publicObjectUrl} className="h-[75vh] w-full" />
+            )}
+            {!publicObjectUrl && blobUrl && (
+              <iframe title={resource.title} src={blobUrl} className="h-[75vh] w-full" />
+            )}
+            {!publicUrlQuery.isLoading && !paidBlobQuery.isLoading && !publicUrlQuery.error && !paidBlobQuery.error && !publicObjectUrl && !blobUrl && (
+              <div className="p-6 text-sm text-muted-foreground">No PDF content loaded yet.</div>
+            )}
+          </div>
+        )}
+
+        <div className="rounded-xl border border-border bg-muted/20 p-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span>
+              <span className="font-medium text-foreground">Debug</span> — tier:{' '}
+              <span className="font-mono">{tier}</span>
+            </span>
+            <span>
+              enabled:{' '}
+              <span className="font-mono">
+                {String(
+                  Boolean(
+                    resource &&
+                      canAccess &&
+                      resource.type === 'pdf' &&
+                      resource.bucket &&
+                      resource.filePath,
+                  ),
+                )}
+              </span>
+            </span>
+            <span>
+              status:{' '}
+              <span className="font-mono">
+                {publicUrlQuery.isLoading || paidBlobQuery.isLoading
+                  ? 'loading'
+                  : publicUrlQuery.error || paidBlobQuery.error
+                    ? 'error'
+                    : publicObjectUrl || blobUrl
+                      ? 'ok'
+                      : 'idle'}
+              </span>
+            </span>
+            {backendDownloadUrl && (
+              <a className="underline" href={backendDownloadUrl} target="_blank" rel="noreferrer">
+                Open backend download directly
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+

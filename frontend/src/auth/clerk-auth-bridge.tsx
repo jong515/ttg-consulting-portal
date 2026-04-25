@@ -31,6 +31,7 @@ export function ClerkAuthBridge({ children }: { children: ReactNode }) {
       isLoaded: Boolean(isLoaded),
       isSignedIn: Boolean(isSignedIn),
       user: clerkUserToPortalUser(user),
+      tier: 'paid',
       getToken,
       signIn,
       signOut,
