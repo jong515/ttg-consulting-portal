@@ -53,7 +53,7 @@ function ResourceDetailPage() {
         return null;
       }
 
-      const endpoint = `/dev/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`;
+      const endpoint = `/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`;
 
       return apiFetchBlob(endpoint, getToken);
     },
@@ -78,8 +78,8 @@ function ResourceDetailPage() {
     const encodedPath = encodeURIComponent(resource.filePath);
     const path =
       resource.access === 'paid'
-        ? `/dev/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`
-        : `/dev/storage/public-download?bucket=${encodedBucket}&path=${encodedPath}`;
+        ? `/storage/paid-download?bucket=${encodedBucket}&path=${encodedPath}`
+        : `/storage/public-download?bucket=${encodedBucket}&path=${encodedPath}`;
     const base = import.meta.env.VITE_API_BASE_URL ?? '';
     return base ? `${base}${path}` : null;
   }, [resource]);

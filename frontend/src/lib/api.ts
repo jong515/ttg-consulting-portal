@@ -74,5 +74,5 @@ export function getPublicStorageUrl(
 ): Promise<StorageUrlResponse> {
   const encodedBucket = encodeURIComponent(params.bucket);
   const encodedPath = encodeURIComponent(params.path);
-  return apiFetch<StorageUrlResponse>(`/dev/storage/public-url?bucket=${encodedBucket}&path=${encodedPath}`, getToken);
+  return apiFetch<StorageUrlResponse>(`/storage/public-url?bucket=${encodedBucket}&path=${encodedPath}`, getToken);
 }
