@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.4.1
+**Version**: 1.5.0
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-04-24
+**Last Updated**: 2026-04-28
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -280,7 +280,7 @@ Decoupled frontend (React SPA) + backend API (FastAPI) with Supabase for databas
 
 **Deployment:**
 - **Frontend (optional / temporary)**: Static SPA on **Vercel** — set project **Root Directory** to `frontend`, output `dist`, `npm run build`; `frontend/vercel.json` rewrites all paths to `index.html` for TanStack Router; `package.json` **`engines.node`** should satisfy toolchain requirements; set env vars in Vercel (see [Deployment & Environments](../deployment/environments.md)). **`VITE_*` variables are inlined at build time** — redeploy after changing them.
-- **Backend**: Not run as part of a default Vercel static deploy; host FastAPI separately when the API is required, and set **`FRONTEND_URL`** on the API to the SPA origin for CORS.
+- **Backend (Vercel Functions)**: Deploy FastAPI as a **separate Vercel project** with **Root Directory** set to `backend/`. The backend project exposes an ASGI entrypoint at `backend/api/index.py` and uses `backend/vercel.json` to route requests into the function. Configure backend env vars in Vercel (Preview + Production): `ENVIRONMENT=production`, `FRONTEND_URL=<SPA origin>`, optional `FRONTEND_URL_REGEX=<preview origin regex>`, plus Supabase/Clerk secrets. When using `FRONTEND_URL_REGEX`, keep it **anchored and project-scoped** (do not allow arbitrary `*.vercel.app`), especially if credentialed requests are enabled.
 - Docker images pushed to GitHub Container Registry (GHCR)
 - GitHub Actions CI/CD (lint, type-check via Pyright/tsc, tests, image build)
 
@@ -495,10 +495,11 @@ interface UserContentAccess {
 ### Security Considerations
 
 - All protected FastAPI routes validate Clerk JWT before processing
+- In staging/production, configure `CLERK_AUDIENCE` so JWT audience verification is enabled (avoid accepting cross-client tokens)
 - Supabase Row Level Security (RLS) policies enforce data access boundaries
 - Video URLs use signed/expiring links from Supabase Storage
 - PII encrypted at rest in Supabase (database-level encryption)
-- CORS configured to allow only portal domain origins
+- CORS configured to allow only portal domain origins; preview origins must be explicitly constrained (e.g. anchored regex), particularly when browser credentials are permitted
 - Rate limiting on auth endpoints
 
 ### Performance Optimization
@@ -619,6 +620,13 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-04-28 v1.5.0
+- Status: In Development
+- Changes:
+  - Documented Vercel-hosted FastAPI backend as a separate project rooted at `backend/` (Vercel Functions entrypoint + routing)
+  - Added backend deployment configuration requirements: `FRONTEND_URL` and optional `FRONTEND_URL_REGEX` for Preview Deployments
+  - Clarified production auth hardening: set `CLERK_AUDIENCE` to ensure audience verification
 
 ### 2026-04-24 v1.4.1
 - Status: In Development

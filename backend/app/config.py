@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 
     # App
     frontend_url: str = "http://localhost:5173"
+    frontend_url_regex: str = ""
     log_level: str = "INFO"
     environment: str = "development"
     app_version: str = "0.1.0"
