@@ -16,7 +16,7 @@ export const Route = createFileRoute('/')({
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-brand-bg">
+    <div className="min-h-screen bg-brand-cream">
       <Navbar />
       <main>
         <HeroSection />

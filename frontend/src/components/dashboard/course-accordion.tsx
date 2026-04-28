@@ -37,7 +37,7 @@ export function CourseAccordion() {
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-semibold text-foreground">DSA Pathways &amp; Overview</h3>
-              <Badge className="border-0 bg-emerald-600 font-medium text-white hover:bg-emerald-600/90">
+              <Badge className="border-0 bg-brand-sage font-medium text-brand-dark hover:bg-brand-sage/90">
                 Free
               </Badge>
             </div>
@@ -54,7 +54,7 @@ export function CourseAccordion() {
               </div>
               <Progress
                 value={courseProgress}
-                className="h-2 bg-emerald-600/15 [&_[data-slot=progress-indicator]]:bg-emerald-600"
+                className="h-2 bg-brand-sage/25 **:data-[slot=progress-indicator]:bg-brand-sage"
               />
             </div>
             <ul className="grid gap-2">
@@ -63,7 +63,7 @@ export function CourseAccordion() {
                   key={lesson.title}
                   className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-sm shadow-xs"
                 >
-                  <Video className="size-4 shrink-0 text-emerald-700" aria-hidden />
+                  <Video className="size-4 shrink-0 text-brand-indigo" aria-hidden />
                   <span className="min-w-0 flex-1 font-medium text-foreground">{lesson.title}</span>
                   <span className="shrink-0 tabular-nums text-xs text-muted-foreground">{lesson.duration}</span>
                 </li>
@@ -112,7 +112,7 @@ export function CourseAccordion() {
               </p>
               <Button
                 asChild
-                className="h-10 bg-[#1B365D] px-6 font-semibold text-white hover:bg-[#1B365D]/92"
+                className="h-10 px-6 font-semibold"
               >
                 <Link to="/auth/sign-up">
                   Upgrade to Access

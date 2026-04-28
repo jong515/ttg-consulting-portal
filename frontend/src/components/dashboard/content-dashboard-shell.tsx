@@ -34,10 +34,10 @@ export function ContentDashboardShell({ children }: { children: ReactNode }) {
               <SheetTitle className="sr-only">Dashboard</SheetTitle>
               <SheetDescription className="sr-only">Dashboard navigation</SheetDescription>
               <div className="flex h-14 items-center gap-3 border-b border-border px-5">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#0B1B3A] text-sm font-semibold tracking-tight text-white">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-indigo text-sm font-semibold tracking-tight text-white">
                   bg
                 </div>
-                <span className="truncate font-semibold text-[#0B1B3A]">beyondgrades</span>
+                <span className="truncate font-serif font-semibold text-brand-dark">beyond grades</span>
               </div>
               <ContentDashboardNavLinks onNavigate={() => setOpen(false)} />
               <div className="border-t border-border p-3">

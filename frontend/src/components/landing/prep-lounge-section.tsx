@@ -17,87 +17,83 @@ export function PrepLoungeSection() {
       <div className="mx-auto max-w-[1200px] px-6 py-18 md:py-22">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-14">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] font-semibold text-[#2563EB] mb-4">
+            <p className="text-xs uppercase tracking-[0.22em] font-semibold text-brand-indigo mb-4">
               PREP LOUNGE
             </p>
 
-            <h2 className="text-[#0B1B3A] text-4xl md:text-[52px] font-semibold leading-[1.05] tracking-[-0.02em] mb-6">
+            <h2 className="text-brand-dark text-4xl md:text-[52px] font-bold leading-[1.05] tracking-[-0.02em] mb-6">
               Everything You Need to Ace Your DSA Interview.
             </h2>
 
             <ul className="grid gap-3 mb-7">
               {bullets.map((item) => (
                 <li key={item} className="flex gap-3 items-start">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-600 shrink-0" />
-                  <span className="text-[#1E2A4A]/80">{item}</span>
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-brand-sage shrink-0" />
+                  <span className="text-brand-dark/80">{item}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-[#1E2A4A]/75 leading-relaxed max-w-[560px] mb-7">
+            <p className="text-brand-dark/75 leading-relaxed max-w-[560px] mb-7">
               Join a structured prep space designed for busy parents — learn the
               strategy, practice confidently, and get answers when you need them.
             </p>
 
-            <Button
-              asChild
-              size="lg"
-              className="h-12 rounded-full px-7 bg-[#0B1B3A] hover:bg-[#0B1B3A]/92 text-white"
-            >
+            <Button asChild size="lg" className="h-12 rounded-full px-7">
               <Link to="/auth/sign-up">Sign Up for Free →</Link>
             </Button>
           </div>
 
           <div className="relative">
-            <div className="mx-auto max-w-[560px] rounded-2xl border border-[#0B1B3A]/10 bg-[#F7FAFF] p-8 shadow-[0_18px_50px_-35px_rgba(11,27,58,0.5)]">
+            <div className="mx-auto max-w-[560px] rounded-2xl border border-brand-grey bg-brand-grey/20 p-8 shadow-[0_18px_50px_-35px_rgba(26,26,46,0.25)]">
               <div className="flex items-center justify-between mb-6">
-                <div className="h-2.5 w-24 rounded-full bg-[#0B1B3A]/10" />
+                <div className="h-2.5 w-24 rounded-full bg-brand-grey" />
                 <div className="flex gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[#0B1B3A]/20" />
-                  <span className="h-2 w-2 rounded-full bg-[#0B1B3A]/20" />
-                  <span className="h-2 w-2 rounded-full bg-[#0B1B3A]/20" />
+                  <span className="h-2 w-2 rounded-full bg-brand-grey" />
+                  <span className="h-2 w-2 rounded-full bg-brand-grey" />
+                  <span className="h-2 w-2 rounded-full bg-brand-grey" />
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl bg-white border border-[#0B1B3A]/10 p-6">
-                <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-[#2563EB]/10 blur-2xl" />
-                <div className="absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-emerald-500/10 blur-2xl" />
+              <div className="relative overflow-hidden rounded-xl bg-white border border-brand-grey p-6">
+                <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-brand-indigo/10 blur-2xl" />
+                <div className="absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-brand-sage/30 blur-2xl" />
 
                 <div className="relative">
                   {/* simple flat illustration: student + floating icons */}
                   <div className="mx-auto w-full max-w-[360px]">
                     <div className="flex items-end justify-center gap-5">
                       <div className="relative">
-                        <div className="h-16 w-16 rounded-full bg-[#0B1B3A]/10" />
-                        <div className="mt-3 h-20 w-28 rounded-2xl bg-[#0B1B3A]/8" />
+                        <div className="h-16 w-16 rounded-full bg-brand-grey/60" />
+                        <div className="mt-3 h-20 w-28 rounded-2xl bg-brand-grey/40" />
                       </div>
 
                       <div className="relative">
-                        <div className="h-18 w-40 rounded-2xl bg-[#0B1B3A]/6 border border-[#0B1B3A]/10" />
-                        <div className="absolute left-5 top-4 h-2 w-20 rounded-full bg-[#0B1B3A]/15" />
-                        <div className="absolute left-5 top-9 h-2 w-28 rounded-full bg-[#0B1B3A]/10" />
-                        <div className="absolute right-4 -top-5 h-10 w-10 rounded-2xl bg-white border border-[#0B1B3A]/10 shadow-sm flex items-center justify-center text-[#0B1B3A]">
+                        <div className="h-18 w-40 rounded-2xl bg-brand-grey/30 border border-brand-grey" />
+                        <div className="absolute left-5 top-4 h-2 w-20 rounded-full bg-brand-grey" />
+                        <div className="absolute left-5 top-9 h-2 w-28 rounded-full bg-brand-grey/80" />
+                        <div className="absolute right-4 -top-5 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
                           <Video className="h-5 w-5" />
                         </div>
-                        <div className="absolute -right-3 top-9 h-10 w-10 rounded-2xl bg-white border border-[#0B1B3A]/10 shadow-sm flex items-center justify-center text-[#0B1B3A]">
+                        <div className="absolute -right-3 top-9 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
                           <FileText className="h-5 w-5" />
                         </div>
-                        <div className="absolute left-3 -top-7 h-10 w-10 rounded-2xl bg-white border border-[#0B1B3A]/10 shadow-sm flex items-center justify-center text-[#0B1B3A]">
+                        <div className="absolute left-3 -top-7 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
                           <Trophy className="h-5 w-5" />
                         </div>
                       </div>
                     </div>
 
                     <div className="mt-6 flex items-center justify-center gap-3">
-                      <span className="h-2.5 w-20 rounded-full bg-[#0B1B3A]/10" />
-                      <span className="h-2.5 w-14 rounded-full bg-[#0B1B3A]/10" />
-                      <span className="h-2.5 w-24 rounded-full bg-[#0B1B3A]/10" />
+                      <span className="h-2.5 w-20 rounded-full bg-brand-grey" />
+                      <span className="h-2.5 w-14 rounded-full bg-brand-grey" />
+                      <span className="h-2.5 w-24 rounded-full bg-brand-grey" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-5 text-xs text-[#1E2A4A]/60 text-center">
+              <div className="mt-5 text-xs text-brand-dark/60 text-center">
                 Your prep lounge: videos, guides, and community support
               </div>
             </div>

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export function StudentsSocialProofSection() {
   return (
-    <section className="w-full bg-[#0B1B3A]">
+    <section className="w-full bg-brand-indigo">
       <div className="mx-auto max-w-[1200px] px-6 py-18 md:py-24">
         <div className="text-center">
           <h2 className="text-white text-3xl md:text-[44px] font-semibold tracking-[-0.02em] leading-[1.1]">
@@ -26,7 +26,7 @@ export function StudentsSocialProofSection() {
             <Button
               asChild
               size="lg"
-              className="h-12 rounded-full px-8 bg-[#2563EB] hover:bg-[#2563EB]/92 text-white shadow-sm"
+              className="h-12 rounded-full px-8 bg-white text-brand-indigo hover:bg-white/90 shadow-sm"
             >
               <Link to="/auth/sign-up">Students – Join Now</Link>
             </Button>

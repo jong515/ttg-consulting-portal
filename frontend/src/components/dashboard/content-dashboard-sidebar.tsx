@@ -22,7 +22,7 @@ export function ContentDashboardNavLinks({ onNavigate }: { onNavigate?: () => vo
             className={cn(
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
               active
-                ? 'bg-accent text-accent-foreground'
+                ? 'bg-brand-indigo/10 text-brand-indigo'
                 : 'text-muted-foreground hover:bg-muted/80 hover:text-foreground'
             )}
           >
@@ -41,10 +41,10 @@ export function ContentDashboardSidebar() {
   return (
     <aside className="hidden h-full w-60 shrink-0 flex-col border-r border-border bg-white md:flex">
       <div className="flex h-16 items-center gap-3 border-b border-border px-5">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#0B1B3A] text-sm font-semibold tracking-tight text-white">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-indigo text-sm font-semibold tracking-tight text-white">
           bg
         </div>
-        <span className="truncate font-semibold text-[#0B1B3A]">beyondgrades</span>
+        <span className="truncate font-serif font-semibold text-brand-dark">beyond grades</span>
       </div>
 
       <ContentDashboardNavLinks />

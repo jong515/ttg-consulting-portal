@@ -1,17 +1,17 @@
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-[#0B1B3A]/10">
+    <footer className="bg-brand-cream border-t border-brand-grey">
       <div className="mx-auto max-w-[1200px] px-6 py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-[#0B1B3A]">
+            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-brand-dark">
               Resources
             </h3>
             <ul className="mt-4 grid gap-2">
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   DSA Pathways
                 </a>
@@ -19,7 +19,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Interview Prep
                 </a>
@@ -27,7 +27,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Timeline &amp; Deadlines
                 </a>
@@ -35,7 +35,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   PDF Downloads
                 </a>
@@ -44,14 +44,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-[#0B1B3A]">
+            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-brand-dark">
               Platform
             </h3>
             <ul className="mt-4 grid gap-2">
               <li>
                 <a
                   href="/auth/sign-up"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Sign Up
                 </a>
@@ -59,7 +59,7 @@ export function Footer() {
               <li>
                 <a
                   href="/auth/login"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Log In
                 </a>
@@ -67,7 +67,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Pricing
                 </a>
@@ -75,7 +75,7 @@ export function Footer() {
               <li>
                 <a
                   href="/dashboard"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Dashboard
                 </a>
@@ -84,14 +84,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-[#0B1B3A]">
+            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-brand-dark">
               Company
             </h3>
             <ul className="mt-4 grid gap-2">
               <li>
                 <a
                   href="#about"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   About Us
                 </a>
@@ -99,7 +99,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Meet the Team
                 </a>
@@ -107,7 +107,7 @@ export function Footer() {
               <li>
                 <a
                   href="#consult"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Consult Us
                 </a>
@@ -115,7 +115,7 @@ export function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Careers
                 </a>
@@ -124,14 +124,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-[#0B1B3A]">
+            <h3 className="text-[12px] font-semibold tracking-[0.14em] uppercase text-brand-dark">
               Contact
             </h3>
             <ul className="mt-4 grid gap-2">
               <li>
                 <a
                   href="#consult"
-                  className="text-[13px] text-[#1E2A4A]/70 hover:text-[#0B1B3A] transition-colors"
+                  className="text-[13px] text-brand-dark/70 hover:text-brand-indigo transition-colors"
                 >
                   Contact Us
                 </a>
@@ -139,14 +139,14 @@ export function Footer() {
             </ul>
 
             <div className="mt-6">
-              <div className="text-[12px] font-semibold tracking-[0.14em] uppercase text-[#0B1B3A]">
+              <div className="text-[12px] font-semibold tracking-[0.14em] uppercase text-brand-dark">
                 Connect with us
               </div>
               <div className="mt-3 flex items-center gap-3">
                 <a
                   href="#"
                   aria-label="Instagram"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0B1B3A]/10 text-[#0B1B3A]/70 hover:text-[#0B1B3A] hover:bg-[#0B1B3A]/3 transition-colors"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-brand-grey text-brand-dark/70 hover:text-brand-indigo hover:bg-brand-white transition-colors"
                 >
                   {/* lightweight inline icons to avoid extra deps */}
                   <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
@@ -171,7 +171,7 @@ export function Footer() {
                 <a
                   href="#"
                   aria-label="TikTok"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0B1B3A]/10 text-[#0B1B3A]/70 hover:text-[#0B1B3A] hover:bg-[#0B1B3A]/3 transition-colors"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-brand-grey text-brand-dark/70 hover:text-brand-indigo hover:bg-brand-white transition-colors"
                 >
                   <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
                     <path
@@ -193,7 +193,7 @@ export function Footer() {
                 <a
                   href="#"
                   aria-label="YouTube"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0B1B3A]/10 text-[#0B1B3A]/70 hover:text-[#0B1B3A] hover:bg-[#0B1B3A]/3 transition-colors"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-brand-grey text-brand-dark/70 hover:text-brand-indigo hover:bg-brand-white transition-colors"
                 >
                   <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
                     <path
@@ -211,7 +211,7 @@ export function Footer() {
                 <a
                   href="#"
                   aria-label="Facebook"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0B1B3A]/10 text-[#0B1B3A]/70 hover:text-[#0B1B3A] hover:bg-[#0B1B3A]/3 transition-colors"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-brand-grey text-brand-dark/70 hover:text-brand-indigo hover:bg-brand-white transition-colors"
                 >
                   <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
                     <path
@@ -225,21 +225,21 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 pt-7 border-t border-[#0B1B3A]/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[12px] text-[#1E2A4A]/65">
+        <div className="mt-10 pt-7 border-t border-brand-grey flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-[12px] text-brand-dark/65">
             &copy; {new Date().getFullYear()} Think Teach Group. All rights
             reserved.
           </p>
           <div className="flex items-center gap-6">
             <a
               href="#"
-              className="text-[12px] text-[#1E2A4A]/65 hover:text-[#0B1B3A] transition-colors"
+              className="text-[12px] text-brand-dark/65 hover:text-brand-indigo transition-colors"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-[12px] text-[#1E2A4A]/65 hover:text-[#0B1B3A] transition-colors"
+              className="text-[12px] text-brand-dark/65 hover:text-brand-indigo transition-colors"
             >
               Terms
             </a>

@@ -130,7 +130,7 @@ function ResourceDetailPage() {
               <Link to="/dashboard/resources">Back</Link>
             </Button>
             {canOpenInNewTab && (
-              <Button asChild className="bg-brand-accent hover:bg-brand-accent/90 text-white">
+              <Button asChild>
                 <a href={publicObjectUrl ?? blobUrl ?? '#'} target="_blank" rel="noreferrer">
                   Open in new tab
                 </a>

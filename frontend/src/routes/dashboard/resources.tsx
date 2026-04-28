@@ -76,7 +76,6 @@ function DashboardResourcesPage() {
                     {canOpenPublic && (
                       <Button
                         size="sm"
-                        className="bg-brand-accent hover:bg-brand-accent/90 text-white"
                         disabled={openingId === resource.id}
                         onClick={() => {
                           if (!resource.bucket || !resource.filePath) return;
@@ -103,7 +102,6 @@ function DashboardResourcesPage() {
                     {isPaidPdf && (
                       <Button
                         size="sm"
-                        className="bg-brand-accent hover:bg-brand-accent/90 text-white"
                         asChild
                       >
                         <Link to="/dashboard/resources/$resourceId" params={{ resourceId: resource.id }}>

@@ -12,9 +12,9 @@ function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg flex flex-col">
-      <header className="border-b border-brand-border px-6 py-4">
-        <Link to="/" className="text-sm text-brand-text-muted hover:text-brand-accent transition-colors">
+    <div className="min-h-screen bg-brand-cream flex flex-col">
+      <header className="border-b border-brand-grey px-6 py-4">
+        <Link to="/" className="text-sm text-brand-dark/70 hover:text-brand-indigo transition-colors">
           Back to home
         </Link>
       </header>

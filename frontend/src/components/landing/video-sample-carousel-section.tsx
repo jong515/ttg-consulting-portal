@@ -63,13 +63,13 @@ export function VideoSampleCarouselSection() {
   const headingId = useMemo(() => 'video-samples', []);
 
   return (
-    <section aria-labelledby={headingId} className="w-full bg-[#F3F5F8]">
+    <section aria-labelledby={headingId} className="w-full bg-brand-grey/30">
       <div className="mx-auto max-w-[1200px] px-6 py-18 md:py-22">
         <div className="flex items-center justify-between gap-4 mb-8 md:mb-10">
           <div className="flex-1" />
           <h2
             id={headingId}
-            className="flex-1 text-center text-[#0B1B3A] text-3xl md:text-[40px] font-semibold tracking-[-0.02em]"
+            className="flex-1 text-center text-brand-dark text-3xl md:text-[40px] font-bold tracking-[-0.02em]"
           >
             See What Our Students Say
           </h2>
@@ -85,10 +85,10 @@ export function VideoSampleCarouselSection() {
                 size="icon"
                 onClick={onPrev}
                 disabled={activeIdx === 0}
-                className="h-11 w-11 rounded-full border-[#0B1B3A]/20 bg-white/80 hover:bg-white shadow-sm"
+                className="h-11 w-11 rounded-full border-brand-grey bg-white/80 hover:bg-white shadow-sm"
                 aria-label="Previous video"
               >
-                <ChevronLeft className="h-5 w-5 text-[#0B1B3A]" />
+                <ChevronLeft className="h-5 w-5 text-brand-dark" />
               </Button>
             </div>
             <div className="pointer-events-auto">
@@ -98,10 +98,10 @@ export function VideoSampleCarouselSection() {
                 size="icon"
                 onClick={onNext}
                 disabled={activeIdx === teasers.length - 1}
-                className="h-11 w-11 rounded-full border-[#0B1B3A]/20 bg-white/80 hover:bg-white shadow-sm"
+                className="h-11 w-11 rounded-full border-brand-grey bg-white/80 hover:bg-white shadow-sm"
                 aria-label="Next video"
               >
-                <ChevronRight className="h-5 w-5 text-[#0B1B3A]" />
+                <ChevronRight className="h-5 w-5 text-brand-dark" />
               </Button>
             </div>
           </div>
@@ -123,14 +123,14 @@ export function VideoSampleCarouselSection() {
                     isActive ? 'md:scale-[1.02]' : 'md:scale-[0.94] opacity-95',
                   ].join(' ')}
                 >
-                  <div className="rounded-2xl overflow-hidden border border-[#0B1B3A]/10 bg-white shadow-[0_18px_50px_-40px_rgba(11,27,58,0.55)]">
+                  <div className="rounded-2xl overflow-hidden border border-brand-grey bg-white shadow-[0_18px_50px_-40px_rgba(26,26,46,0.25)]">
                     {/* Thumbnail */}
-                    <div className="relative aspect-video bg-linear-to-br from-[#0B1B3A] via-[#0B1B3A]/85 to-[#2563EB]/65">
+                    <div className="relative aspect-video bg-linear-to-br from-brand-indigo via-brand-indigo/85 to-brand-sage/55">
                       <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(circle_at_70%_60%,rgba(255,255,255,0.25),transparent_45%)]" />
 
                       <div className="absolute inset-0 grid place-items-center">
                         <div className="h-14 w-14 rounded-full bg-white/95 shadow-sm grid place-items-center">
-                          <Play className="h-6 w-6 text-[#0B1B3A] fill-[#0B1B3A] translate-x-px" />
+                          <Play className="h-6 w-6 text-brand-indigo fill-brand-indigo translate-x-px" />
                         </div>
                       </div>
 
@@ -146,7 +146,7 @@ export function VideoSampleCarouselSection() {
 
                     {/* Quote */}
                     <div className="px-6 py-5">
-                      <p className="text-[#0B1B3A]/85 leading-relaxed line-clamp-3">
+                      <p className="text-brand-dark/85 leading-relaxed line-clamp-3">
                         {t.quote}
                       </p>
                     </div>

@@ -2,19 +2,16 @@
 // This file documents the brand design tokens for reference.
 
 export const brandColors = {
-  accent: '#1B6B4A',
-  'accent-dark': '#0E3D2B',
-  'accent-light': '#E8F5EE',
-  warm: '#F6F1EB',
-  bg: '#FDFCFA',
-  text: '#1A1A1A',
-  'text-muted': '#6B6560',
-  border: '#E2DDD7',
+  indigo: '#4C5FD5',
+  cream: '#F5F0E6',
+  grey: '#E5E7EB',
+  sage: '#BFCBB2',
+  dark: '#1A1A2E',
 } as const;
 
 export const fontFamilies = {
-  sans: ['DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-  serif: ['Playfair Display', 'ui-serif', 'Georgia', 'serif'],
+  serif: ['Lora', 'Georgia', 'serif'],
+  sans: ['DM Sans', 'system-ui', 'sans-serif'],
 } as const;
 
 export default {

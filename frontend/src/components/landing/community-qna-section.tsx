@@ -137,7 +137,7 @@ export function CommunityQnaSection() {
       <div className="mx-auto max-w-[1200px] px-6 py-18 md:py-22">
         <h2
           id={headingId}
-          className="text-left text-[#0B1B3A] text-3xl md:text-[40px] font-semibold tracking-[-0.02em]"
+          className="text-left text-brand-dark text-3xl md:text-[40px] font-bold tracking-[-0.02em]"
         >
           Our Community is Here to Help With All Your DSA Questions
         </h2>
@@ -151,10 +151,10 @@ export function CommunityQnaSection() {
                 size="icon"
                 onClick={() => scrollByAmount(-getScrollStep())}
                 disabled={!canScrollLeft}
-                className="h-11 w-11 rounded-full border-[#0B1B3A]/20 bg-white/85 hover:bg-white shadow-sm"
+                className="h-11 w-11 rounded-full bg-white/85 hover:bg-white shadow-sm"
                 aria-label="Scroll community answers left"
               >
-                <ChevronLeft className="h-5 w-5 text-[#0B1B3A]" />
+                <ChevronLeft className="h-5 w-5 text-brand-dark" />
               </Button>
             </div>
             <div className="pointer-events-auto">
@@ -164,10 +164,10 @@ export function CommunityQnaSection() {
                 size="icon"
                 onClick={() => scrollByAmount(getScrollStep())}
                 disabled={!canScrollRight}
-                className="h-11 w-11 rounded-full border-[#0B1B3A]/20 bg-white/85 hover:bg-white shadow-sm"
+                className="h-11 w-11 rounded-full bg-white/85 hover:bg-white shadow-sm"
                 aria-label="Scroll community answers right"
               >
-                <ChevronRight className="h-5 w-5 text-[#0B1B3A]" />
+                <ChevronRight className="h-5 w-5 text-brand-dark" />
               </Button>
             </div>
           </div>
@@ -196,13 +196,13 @@ export function CommunityQnaSection() {
                   data-qna-card
                   className="shrink-0 w-[300px] sm:w-[320px]"
                 >
-                  <Card className="h-full rounded-2xl border border-[#0B1B3A]/12 bg-white shadow-none">
+                  <Card className="h-full rounded-2xl border border-brand-grey bg-white shadow-none hover:shadow-sm transition-shadow">
                     <CardContent className="px-6 pt-6 pb-0">
-                      <h3 className="text-[#0B1B3A] font-semibold text-base leading-snug line-clamp-2">
+                      <h3 className="text-brand-dark font-semibold text-base leading-snug line-clamp-2">
                         {card.question}
                       </h3>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[#1E2A4A]/65">
+                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-brand-dark/65">
                         <span className="inline-flex items-center gap-1.5">
                           <CalendarDays className="h-3.5 w-3.5" />
                           {card.daysAgo}d ago
@@ -219,18 +219,18 @@ export function CommunityQnaSection() {
 
                       <div className="mt-5 flex items-start gap-3">
                         <Avatar size="sm" className="mt-0.5">
-                          <AvatarFallback className="bg-[#0B1B3A]/8 text-[#0B1B3A]/80">
+                          <AvatarFallback className="bg-brand-sage/35 text-brand-dark">
                             {initials(card.consultantName)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                          <div className="text-xs text-[#1E2A4A]/70">
+                          <div className="text-xs text-brand-dark/70">
                             Best answer by{' '}
-                            <span className="font-semibold text-[#0B1B3A]">
+                            <span className="font-semibold text-brand-dark">
                               {card.consultantName}
                             </span>
                           </div>
-                          <p className="mt-2 text-sm text-[#1E2A4A]/80 leading-relaxed line-clamp-3">
+                          <p className="mt-2 text-sm text-brand-dark/80 leading-relaxed line-clamp-3">
                             {card.answerPreview}
                           </p>
                         </div>
@@ -242,7 +242,7 @@ export function CommunityQnaSection() {
                         type="button"
                         variant="outline"
                         className={cn(
-                          'w-full rounded-lg border-[#0B1B3A]/20 bg-white hover:bg-[#0B1B3A]/3 text-[#0B1B3A]'
+                          'w-full rounded-lg bg-white'
                         )}
                       >
                         View Full Answer
@@ -255,14 +255,10 @@ export function CommunityQnaSection() {
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-3 text-center">
-            <p className="text-sm text-[#1E2A4A]/75">
+            <p className="text-sm text-brand-dark/75">
               Sign up to access all community answers
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="h-11 rounded-lg px-7 bg-[#0B1B3A] hover:bg-[#0B1B3A]/92 text-white shadow-sm"
-            >
+            <Button asChild size="lg" className="h-11 px-7">
               <Link to="/auth/sign-up">Join Free</Link>
             </Button>
           </div>
