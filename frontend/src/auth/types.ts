@@ -5,11 +5,14 @@ export interface PortalUser {
   lastName: string | null;
 }
 
+export type PortalTier = 'free' | 'paid';
+
 export interface PortalAuthContextValue {
   isLoaded: boolean;
   isSignedIn: boolean;
   user: PortalUser | null;
+  tier: PortalTier;
   getToken: () => Promise<string | null>;
-  signIn: () => Promise<void>;
+  signIn: (tier?: PortalTier) => Promise<void>;
   signOut: () => Promise<void>;
 }
