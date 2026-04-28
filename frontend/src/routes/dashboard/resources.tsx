@@ -54,6 +54,7 @@ function DashboardResourcesPage() {
               const topicLabel = TOPIC_LABELS[resource.topic];
               const isPdf = resource.type === 'pdf';
               const isPublic = resource.access !== 'paid';
+              const isPaidPdf = isPdf && !isPublic;
               const canOpenPublic = Boolean(isPdf && isPublic && resource.bucket && resource.filePath);
               return (
                 <li
@@ -97,6 +98,17 @@ function DashboardResourcesPage() {
                         }}
                       >
                         {openingId === resource.id ? 'Opening…' : 'View'}
+                      </Button>
+                    )}
+                    {isPaidPdf && (
+                      <Button
+                        size="sm"
+                        className="bg-brand-accent hover:bg-brand-accent/90 text-white"
+                        asChild
+                      >
+                        <Link to="/dashboard/resources/$resourceId" params={{ resourceId: resource.id }}>
+                          View
+                        </Link>
                       </Button>
                     )}
                   </div>
