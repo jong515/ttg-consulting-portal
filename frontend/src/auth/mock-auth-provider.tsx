@@ -12,6 +12,7 @@ const MOCK_USER: PortalUser = {
 export function MockAuthProvider({ children }: { children: ReactNode }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [tier, setTier] = useState<PortalTier>('free');
+  const devBearerToken = import.meta.env.VITE_DEV_BEARER_TOKEN ?? null;
 
   const signIn = useCallback(async (nextTier: PortalTier = 'free') => {
     setTier(nextTier);
@@ -29,11 +30,11 @@ export function MockAuthProvider({ children }: { children: ReactNode }) {
       isSignedIn,
       user: isSignedIn ? MOCK_USER : null,
       tier: isSignedIn ? tier : 'free',
-      getToken: async () => null,
+      getToken: async () => (isSignedIn && tier === 'paid' ? devBearerToken : null),
       signIn,
       signOut,
     }),
-    [isSignedIn, signIn, signOut, tier],
+    [devBearerToken, isSignedIn, signIn, signOut, tier],
   );
 
   return <PortalAuthContext.Provider value={value}>{children}</PortalAuthContext.Provider>;
