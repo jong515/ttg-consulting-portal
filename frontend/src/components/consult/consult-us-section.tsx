@@ -15,18 +15,52 @@ export function ConsultUsSection() {
   return (
     <section className="bg-white py-16 md:py-24" aria-label="Consultation details">
       <div className="mx-auto max-w-[900px] px-6">
-        <div className="text-center">
+        <div className="mx-auto max-w-3xl">
           <h1 className="font-serif text-3xl font-bold tracking-tight text-brand-dark md:text-4xl">
-            Ready to Get Personalised DSA Guidance?
+            We Are Here to Support Your Child in Their DSA Journey
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-brand-dark/80">
-            A 1-on-1 consultation is your chance to align strategy with your child’s strengths. We
-            cover <strong className="font-semibold text-brand-dark">pathway mapping</strong> to clarify
-            realistic options, <strong className="font-semibold text-brand-dark">interview coaching</strong>{' '}
-            with structured practice and feedback, and{' '}
-            <strong className="font-semibold text-brand-dark">school-specific prep</strong> so you know
-            what each shortlist school tends to value—and how to prepare for it.
-          </p>
+          <div className="mt-5 space-y-4 text-base leading-relaxed text-brand-dark/80">
+            <p>
+              When Algene first encouraged me to leave my finance job at UBS to start an education
+              company, it wasn&apos;t an easy decision. But what gave me conviction was the vision we
+              shared: to build something that goes beyond academics. We wanted to create a place
+              that not only helps students excel in their studies but also equips them with the
+              confidence, skills, and strategies to thrive in life.
+            </p>
+            <p>
+              My own journey has shown me how important these qualities are. As part of the pioneer
+              batch of the Raffles Integrated Programme, I saw how different pathways like DSA
+              opened doors for my peers. I was fortunate to receive scholarships myself and later
+              sat on scholarship boards, learning first-hand what selectors look for. In my
+              professional career, I represented UBS at campus recruitment and assessed candidates
+              for global programmes. Sitting on both sides of the table taught me an important
+              truth: grades alone are never enough; character, clarity, and confidence often make
+              the difference.
+            </p>
+            <p>
+              That&apos;s why at Think Teach Academy, together with Macro Academy and Summit Education
+              in the Think Teach Group, we aim to guide students through every stage from academics
+              to interviews so they are ready for opportunities when they come.
+            </p>
+            <p>
+              Offering DSA consultation services is a natural extension of this mission. We want to
+              give your child the guidance and preparation I wish I had when I was younger, not to
+              pressure them, but to help them bring out their best selves with confidence and
+              authenticity.
+            </p>
+            <p>
+              Thank you for trusting us to walk alongside your child in this journey. It&apos;s a
+              privilege we don&apos;t take lightly, and we&apos;re proud to play a small part in their
+              growth.
+            </p>
+            <p className="pt-2 text-brand-dark">
+              Yours in Education,
+              <br />
+              Shou Yee
+              <br />
+              Co-Founder, Think Teach Academy
+            </p>
+          </div>
         </div>
 
         <div className="relative mt-12 md:mt-14">
