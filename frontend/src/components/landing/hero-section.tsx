@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ChevronRight, FileText, Trophy, Video } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function HeroSection() {
@@ -42,9 +42,11 @@ export function HeroSection() {
           </div>
 
           <div className="relative">
-            <div className="mx-auto max-w-[560px] rounded-2xl border border-brand-grey bg-brand-grey/20 p-8 shadow-[0_18px_50px_-35px_rgba(26,26,46,0.25)]">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-2.5 w-24 rounded-full bg-brand-grey" />
+            <div className="mx-auto max-w-[560px] rounded-2xl border border-brand-grey bg-white shadow-[0_18px_50px_-35px_rgba(26,26,46,0.25)] overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-brand-grey bg-brand-grey/20">
+                <div className="text-xs font-medium uppercase tracking-[0.18em] text-brand-dark/60">
+                  Watch a quick intro
+                </div>
                 <div className="flex gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-brand-grey" />
                   <span className="h-2 w-2 rounded-full bg-brand-grey" />
@@ -52,45 +54,24 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl bg-white border border-brand-grey p-6">
-                <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-brand-indigo/10 blur-2xl" />
-                <div className="absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-brand-sage/30 blur-2xl" />
-
-                <div className="relative">
-                  <div className="mx-auto w-full max-w-[360px]">
-                    <div className="flex items-end justify-center gap-5">
-                      <div className="relative">
-                        <div className="h-16 w-16 rounded-full bg-brand-grey/60" />
-                        <div className="mt-3 h-20 w-28 rounded-2xl bg-brand-grey/40" />
-                      </div>
-
-                      <div className="relative">
-                        <div className="h-18 w-40 rounded-2xl bg-brand-grey/30 border border-brand-grey" />
-                        <div className="absolute left-5 top-4 h-2 w-20 rounded-full bg-brand-grey" />
-                        <div className="absolute left-5 top-9 h-2 w-28 rounded-full bg-brand-grey/80" />
-                        <div className="absolute right-4 -top-5 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
-                          <Video className="h-5 w-5" />
-                        </div>
-                        <div className="absolute -right-3 top-9 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div className="absolute left-3 -top-7 h-10 w-10 rounded-2xl bg-white border border-brand-grey shadow-sm flex items-center justify-center text-brand-indigo">
-                          <Trophy className="h-5 w-5" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 flex items-center justify-center gap-3">
-                      <span className="h-2.5 w-20 rounded-full bg-brand-grey" />
-                      <span className="h-2.5 w-14 rounded-full bg-brand-grey" />
-                      <span className="h-2.5 w-24 rounded-full bg-brand-grey" />
-                    </div>
+              <div className="p-5">
+                <div className="mx-auto w-full max-w-[420px] lg:max-w-[460px]">
+                  <div className="relative aspect-9/16 overflow-hidden rounded-xl border border-brand-grey bg-brand-grey/30 shadow-sm">
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src="https://www.youtube-nocookie.com/embed/o75xaFFw0vU?playsinline=1&rel=0&modestbranding=1&vq=hd1080"
+                      title="BeyondGrades intro video"
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-5 text-xs text-brand-dark/60 text-center">
-                Your prep lounge: videos, guides, and community support
+                <div className="mt-4 text-xs text-brand-dark/60 text-center">
+                  A quick look at how the portal supports your DSA journey
+                </div>
               </div>
             </div>
           </div>
