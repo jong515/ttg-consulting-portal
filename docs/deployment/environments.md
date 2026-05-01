@@ -2,7 +2,7 @@
 
 ## TTG Consulting Portal - Deployment Guide
 
-**Last Updated**: 2026-04-21
+**Last Updated**: 2026-05-01
 **Status**: Draft
 
 ---
@@ -43,7 +43,7 @@
   - **Without Clerk (UI preview only)**: `VITE_AUTH_MODE=public` — demo sign-in and fixture data; not real authentication.
   - **With Clerk**: `VITE_CLERK_PUBLISHABLE_KEY` and Clerk dashboard URLs for this deployment’s origins; omit `VITE_AUTH_MODE` or use Clerk as in local docs.
   - **With a hosted API**: `VITE_API_BASE_URL` (full base including `/api/v1`). On the **FastAPI** side, set **`FRONTEND_URL`** to this SPA’s exact origin (e.g. `https://your-app.vercel.app`) so CORS allows browser calls. A single `FRONTEND_URL` matches one origin; preview deployments may use different subdomains unless CORS is extended later.
-  - **Public marketing assets in Supabase Storage**: `VITE_SUPABASE_URL` (project URL, same as backend `SUPABASE_URL`) so the SPA can build public object URLs (e.g. `/about` team photos in bucket `public-assets`).
+  - **Supabase project URL (public objects in the browser)**: `VITE_SUPABASE_URL` (same as backend `SUPABASE_URL`). The SPA builds **`/storage/v1/object/public/{bucket}/{path}`** URLs for public buckets (e.g. `/about` team photos in `public-assets`, and **public** dashboard PDFs), so those assets do not depend on `GET /api/v1/storage/public-url`. Paid downloads still use the API.
 
 **CLI (optional)**:
 ```bash
@@ -162,7 +162,9 @@ docker push ghcr.io/[org]/ttg-portal-backend:latest
 VITE_AUTH_MODE=
 
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+# Full base including /api/v1; local default port is 8000 (see root npm run dev / uvicorn).
 VITE_API_BASE_URL=http://localhost:8000/api/v1
+# Required for public Storage URLs in the SPA (marketing assets, public-bucket PDFs).
 VITE_SUPABASE_URL=https://[project].supabase.co
 ```
 

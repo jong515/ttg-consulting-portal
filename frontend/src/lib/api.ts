@@ -68,10 +68,32 @@ export interface StorageUrlResponse {
   expires_in: number | null;
 }
 
+/** Same shape as Supabase `getPublicUrl` — avoids a round-trip when `VITE_SUPABASE_URL` is set. */
+function supabasePublicObjectUrl(bucket: string, objectPath: string): string | null {
+  const raw = import.meta.env.VITE_SUPABASE_URL;
+  if (!raw?.trim()) return null;
+  const base = raw.replace(/\/+$/, '');
+  const b = bucket.replace(/^\/+/, '').replace(/\/+$/, '');
+  const path = objectPath.replace(/^\/+/, '');
+  if (!b || !path) return null;
+  return `${base}/storage/v1/object/public/${b}/${path}`;
+}
+
 export function getPublicStorageUrl(
   params: { bucket: string; path: string },
   getToken: () => Promise<string | null>,
 ): Promise<StorageUrlResponse> {
+  const direct = supabasePublicObjectUrl(params.bucket, params.path);
+  if (direct) {
+    return Promise.resolve({
+      bucket: params.bucket,
+      path: params.path,
+      is_paid: false,
+      url: direct,
+      expires_in: null,
+    });
+  }
+
   const encodedBucket = encodeURIComponent(params.bucket);
   const encodedPath = encodeURIComponent(params.path);
   return apiFetch<StorageUrlResponse>(`/storage/public-url?bucket=${encodedBucket}&path=${encodedPath}`, getToken);

@@ -154,8 +154,8 @@ import type { Video } from '@/types'        // 4. Types
 
 **Frontend** (`.env.local`):
 - `VITE_CLERK_PUBLISHABLE_KEY` — Clerk frontend key
-- `VITE_API_BASE_URL` — Backend API base URL
-- `VITE_SUPABASE_URL` — Supabase project URL (same as backend `SUPABASE_URL`); used for public Storage URLs (e.g. About page images in bucket `public-assets`)
+- `VITE_API_BASE_URL` — Backend API base URL (include `/api/v1`; default local port is **8000** unless uvicorn uses another `--port`)
+- `VITE_SUPABASE_URL` — Supabase project URL (same as backend `SUPABASE_URL`); the SPA builds public object URLs `{url}/storage/v1/object/public/{bucket}/{path}` for public buckets (About page `public-assets`, public dashboard PDFs). Falls back to `GET /api/v1/storage/public-url` only if this is unset.
 
 **Backend** (`.env`):
 - `SUPABASE_URL` — Supabase project URL

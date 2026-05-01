@@ -51,8 +51,10 @@ Edit `.env.local` (see [`frontend/.env.example`](../../frontend/.env.example)):
 ```bash
 VITE_AUTH_MODE=
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
+# Must include the /api/v1 suffix and match the port where uvicorn listens (8000 when using root `npm run dev` or default `uvicorn`).
 VITE_API_BASE_URL=http://localhost:8000/api/v1
-# Same as backend SUPABASE_URL — public Storage URLs (e.g. About page team photos from bucket public-assets).
+# Same as backend SUPABASE_URL. The SPA builds public object URLs as
+# {VITE_SUPABASE_URL}/storage/v1/object/public/{bucket}/{path} for public buckets (dashboard PDFs, About page photos in public-assets, etc.).
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 ```
 
@@ -136,6 +138,11 @@ docker compose up
 - Verify `FRONTEND_URL` in **`backend/.env`** (e.g. `http://localhost:5173`)
 - Ensure frontend `VITE_API_BASE_URL` points at the API (e.g. `http://localhost:8000/api/v1`)
 
+### `net::ERR_CONNECTION_REFUSED` or `404` on `/api/v1/storage/public-url` (local)
+- **`ERR_CONNECTION_REFUSED`**: `VITE_API_BASE_URL` host/port does not match a running API (root `npm run dev` starts uvicorn on **8000** by default; if you use `--port 8011`, set the env var to that port).
+- **`404` on storage routes**: Another process may be bound to the port you think is FastAPI, or an old server is running. Confirm **`http://localhost:8000/docs`** lists **Storage** routes and **`GET /api/v1/health`** returns this app’s JSON.
+- **Public bucket PDFs**: With **`VITE_SUPABASE_URL`** set, the dashboard resolves public file URLs in the browser (same URL shape as Supabase `getPublicUrl`), so opening a public PDF does not require a working `public-url` call. Paid PDFs still need the API (`paid-download`) and a valid JWT or dev bearer token.
+
 ### Root `npm run dev` fails on the API process
 - Confirm **`backend/.venv`** exists and **`pip install -e ".[dev]"`** was run inside that venv
 - On Windows, default npm script shell is **cmd**; if you override **`script-shell`** to older PowerShell, `cd backend && …` may fail — use the default or Option B
@@ -151,4 +158,4 @@ docker compose up
 
 ---
 
-**Last Updated**: 2026-04-05
+**Last Updated**: 2026-05-01

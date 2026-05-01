@@ -3,7 +3,7 @@
 ## TTG Consulting Portal API
 
 **Version**: 1.0
-**Last Updated**: 2026-03-28
+**Last Updated**: 2026-05-01
 **Status**: Draft
 
 ---
@@ -171,6 +171,21 @@ POST   /api/users/provision        # Provision content access (admin only)
   "content_ids": ["content-id-1", "content-id-2"]
 }
 ```
+
+### Storage (Supabase; implemented)
+
+These routes live under the same **`/api/v1`** prefix as health. The SPA typically resolves **public** bucket file URLs in the browser when **`VITE_SUPABASE_URL`** is set (same path Supabase uses for public objects); **`GET /storage/public-url`** remains available as a fallback.
+
+```
+GET    /api/v1/storage/public-url       # Public bucket: returns public URL JSON (no auth)
+GET    /api/v1/storage/public-download  # Public bucket: stream bytes (no auth)
+GET    /api/v1/storage/paid-url         # Paid bucket: signed URL JSON (Clerk JWT)
+GET    /api/v1/storage/paid-download    # Paid bucket: stream bytes (Clerk JWT)
+```
+
+**Query parameters** (all of the above): `bucket`, `path` (object key inside the bucket, e.g. `docs/file.pdf`).
+
+In **development** only, equivalent **`/api/v1/dev/storage/...`** helpers may be registered for smoke tests.
 
 ### Health
 
