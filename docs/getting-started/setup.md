@@ -52,6 +52,8 @@ Edit `.env.local` (see [`frontend/.env.example`](../../frontend/.env.example)):
 VITE_AUTH_MODE=
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
 VITE_API_BASE_URL=http://localhost:8000/api/v1
+# Same as backend SUPABASE_URL — public Storage URLs (e.g. About page team photos from bucket public-assets).
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 ```
 
 ### 4. Backend Setup

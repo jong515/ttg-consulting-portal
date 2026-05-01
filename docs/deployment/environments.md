@@ -43,6 +43,7 @@
   - **Without Clerk (UI preview only)**: `VITE_AUTH_MODE=public` — demo sign-in and fixture data; not real authentication.
   - **With Clerk**: `VITE_CLERK_PUBLISHABLE_KEY` and Clerk dashboard URLs for this deployment’s origins; omit `VITE_AUTH_MODE` or use Clerk as in local docs.
   - **With a hosted API**: `VITE_API_BASE_URL` (full base including `/api/v1`). On the **FastAPI** side, set **`FRONTEND_URL`** to this SPA’s exact origin (e.g. `https://your-app.vercel.app`) so CORS allows browser calls. A single `FRONTEND_URL` matches one origin; preview deployments may use different subdomains unless CORS is extended later.
+  - **Public marketing assets in Supabase Storage**: `VITE_SUPABASE_URL` (project URL, same as backend `SUPABASE_URL`) so the SPA can build public object URLs (e.g. `/about` team photos in bucket `public-assets`).
 
 **CLI (optional)**:
 ```bash
@@ -162,6 +163,7 @@ VITE_AUTH_MODE=
 
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 VITE_API_BASE_URL=http://localhost:8000/api/v1
+VITE_SUPABASE_URL=https://[project].supabase.co
 ```
 
 ### Backend (`.env`)

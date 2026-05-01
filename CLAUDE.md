@@ -155,6 +155,7 @@ import type { Video } from '@/types'        // 4. Types
 **Frontend** (`.env.local`):
 - `VITE_CLERK_PUBLISHABLE_KEY` — Clerk frontend key
 - `VITE_API_BASE_URL` — Backend API base URL
+- `VITE_SUPABASE_URL` — Supabase project URL (same as backend `SUPABASE_URL`); used for public Storage URLs (e.g. About page images in bucket `public-assets`)
 
 **Backend** (`.env`):
 - `SUPABASE_URL` — Supabase project URL
