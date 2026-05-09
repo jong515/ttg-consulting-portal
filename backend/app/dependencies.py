@@ -13,6 +13,8 @@ from supabase import Client
 
 from app.config import settings
 from app.models.schemas import ClerkUser
+from app.services.edxp_authz import EdxpAuthzError
+from app.services.edxp_authz import authorize as edxp_authorize
 from app.services.supabase import get_client as get_supabase_client
 
 logger = structlog.get_logger()
@@ -151,3 +153,36 @@ def get_supabase_public() -> Client:
     or dev-only diagnostics). Paid/protected endpoints should depend on `get_supabase`.
     """
     return get_supabase_client()
+
+
+def require_edxp_permission(action: str):
+    async def _dependency(user: ClerkUser = Depends(get_current_user)) -> None:
+        missing = [
+            key
+            for key, val in (
+                ("EDXP_AUTHZ_URL", settings.edxp_authz_url),
+                ("EDXP_ORG_ID", settings.edxp_org_id),
+                ("EDXP_INTERNAL_JWT_SECRET", settings.edxp_internal_jwt_secret),
+            )
+            if not val
+        ]
+        if missing:
+            logger.warning("EdXP authorization not fully configured", missing_keys=missing)
+            raise HTTPException(status_code=503, detail="Authorization service unavailable")
+
+        try:
+            decision = await edxp_authorize(
+                subject=user.clerk_id,
+                provider="clerk",
+                action=action,
+                org_id=settings.edxp_org_id,
+            )
+        except EdxpAuthzError:
+            logger.exception("EdXP authorization failed")
+            raise HTTPException(status_code=503, detail="Authorization service unavailable")
+
+        allowed = decision.get("allowed")
+        if allowed is not True:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+    return _dependency

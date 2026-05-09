@@ -1,9 +1,9 @@
 # PRD: Think Teach Group Consulting Portal MVP
 
-**Version**: 1.5.0
+**Version**: 1.6.0
 **Component**: Full-stack
 **Status**: In Development
-**Last Updated**: 2026-04-28
+**Last Updated**: 2026-05-06
 **Related**: [@docs/architecture/overview.md](../architecture/overview.md), [@docs/data/models.md](../data/models.md)
 
 ---
@@ -41,9 +41,10 @@ This PRD is a living document that will evolve during development:
 ### Non-Functional Requirements
 
 - **Performance**: Screen transitions <2s, API responses <500ms
-- **Security**: PII encrypted in transit (HTTPS) and at rest. Clerk JWT validation on all protected routes
+- **Security**: PII encrypted in transit (HTTPS) and at rest. Clerk JWT validation on all protected routes. Authorization may be delegated to EdXP-Users (service-to-service `/authorize`) once configured.
 - **Development demos**: The SPA may run a **frontend-only mock auth** path in local development (`VITE_AUTH_MODE=mock`) with static fixture data and **no** Clerk session; production builds **reject** `mock` (enforced at app init). **Hosted UI previews** without Clerk may use **`VITE_AUTH_MODE=public`** (e.g. temporary Vercel deploys): same demo auth and fixture data as mock, explicitly labelled in the UI; **not** a substitute for Clerk for real users, staging acceptance, or security review parity
 - **Backend dev diagnostics (development only)**: The API may expose dev-only endpoints to validate Supabase Storage connectivity (public vs paid buckets) and may enable a dev-only bearer token auth bypass for local testing. These must not be enabled in staging/production.
+- **Backend dev authorization diagnostics (development only)**: The API may expose a dev-only endpoint to exercise EdXP-Users authorization wiring (Clerk subject -> EdXP service token -> `/authorize`). This endpoint must not be enabled in staging/production.
 - **Accessibility**: WCAG 2.1 AA minimum
 - **Scalability**: Support 1,000+ concurrent users, horizontal scaling capability
 - **Platform**: Responsive web application optimized for mobile and desktop browsers
@@ -407,7 +408,7 @@ interface UserContentAccess {
 ### Dependencies
 
 - **Internal**: TTA Shop (payment processing, purchase confirmation)
-- **External**: Clerk (authentication, user management), Supabase (database, file storage)
+- **External**: Clerk (authentication, user management), Supabase (database, file storage), EdXP-Users (authorization/permissions)
 - **Libraries**:
   - Frontend: React 19.1, TanStack Router 1.114+, TanStack Query 5.75+, shadcn/ui, Tailwind CSS 4.1, ESLint 9
   - Backend: FastAPI, Supabase Python client, PyJWT (Clerk validation)
@@ -496,6 +497,12 @@ interface UserContentAccess {
 
 - All protected FastAPI routes validate Clerk JWT before processing
 - In staging/production, configure `CLERK_AUDIENCE` so JWT audience verification is enabled (avoid accepting cross-client tokens)
+- For centralized authorization (roles/permissions), the backend may call **EdXP-Users** `POST /api/v1/authorize` using an HS256 **service token** (not a user token). Configuration is via backend settings/env vars:
+  - `EDXP_AUTHZ_URL` (base URL, e.g. `http://localhost:<port>/api/v1`)
+  - `EDXP_ORG_ID` (sent on every authorize request)
+  - `EDXP_INTERNAL_JWT_SECRET` (HS256 shared secret used to mint service tokens)
+  - `EDXP_SERVICE_NAME` (JWT `sub`, defaults to `ttg-portal`)
+- In development, the backend may expose `POST /api/v1/dev/authz/authorize` to validate the EdXP integration wiring. This endpoint must remain development-only.
 - Supabase Row Level Security (RLS) policies enforce data access boundaries
 - Video URLs use signed/expiring links from Supabase Storage
 - PII encrypted at rest in Supabase (database-level encryption)
@@ -620,6 +627,12 @@ interface UserContentAccess {
 ---
 
 ## Change Log
+
+### 2026-05-06 v1.6.0
+- Status: In Development
+- Changes:
+  - Documented EdXP-Users authorization integration (service-to-service `/authorize`) and required backend configuration variables
+  - Added dev-only EdXP authorization diagnostic endpoint (`/api/v1/dev/authz/authorize`) guidance for local wiring verification
 
 ### 2026-04-28 v1.5.0
 - Status: In Development

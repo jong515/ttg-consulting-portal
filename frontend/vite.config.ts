@@ -11,4 +11,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    port: 5173,
+    // Keeps the HMR client targeting the same port the browser already uses (helps behind
+    // some proxies / Windows setups where the default WS URL is wrong).
+    hmr: {
+      protocol: 'ws',
+      port: 5173,
+      clientPort: 5173,
+    },
+  },
 });
