@@ -2,12 +2,27 @@ import { Link } from '@tanstack/react-router';
 import { CheckCircle2, Lock, PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { publicStorageUrl } from '@/lib/public-assets';
+
+const PREP_LOUNGE_IMAGE = publicStorageUrl('landing/prep_lounge_image.jpg');
 
 const bullets = [
-  'Expert-crafted video modules',
-  'Downloadable PDF guides',
-  'Live Q&A and community answers',
-  '1-on-1 consulting sessions available',
+  {
+    title: 'Strategic Masterclasses',
+    body: 'Expert-led video modules from our team of global graduates.',
+  },
+  {
+    title: 'The Portfolio Blueprint',
+    body: 'Downloadable frameworks to synthesize talents and achievements.',
+  },
+  {
+    title: 'Direct Access',
+    body: 'A dedicated space for live Q&A and real-time community insights.',
+  },
+  {
+    title: 'Executive Consulting',
+    body: 'Tailored 1-on-1 strategy sessions for a personalized competitive edge.',
+  },
 ] as const;
 
 export function PrepLoungeSection() {
@@ -15,27 +30,44 @@ export function PrepLoungeSection() {
     <section className="w-full bg-white">
       <div className="mx-auto max-w-[1200px] px-6 py-18 md:py-22">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-14">
-          <div>
+          <div className="min-w-0">
+            {PREP_LOUNGE_IMAGE ? (
+              <div className="relative mb-6 w-full overflow-hidden rounded-lg shadow-[0_12px_40px_-28px_rgba(26,26,46,0.35)] ring-1 ring-brand-dark/10 lg:aspect-[2.1/1]">
+                <img
+                  src={PREP_LOUNGE_IMAGE}
+                  alt="DSA and portfolio prep workspace"
+                  className="block h-auto w-full lg:absolute lg:inset-0 lg:h-full lg:object-cover lg:object-center"
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(max-width: 1023px) 100vw, min(540px, 50vw)"
+                />
+              </div>
+            ) : null}
+
             <h2 className="text-brand-dark text-4xl md:text-[52px] font-bold leading-[1.05] tracking-[-0.02em] mb-6">
-              Everything You Need to Ace Your DSA.
+              The Comprehensive DSA & Portfolio Ecosystem
             </h2>
 
             <ul className="grid gap-3 mb-7">
               {bullets.map((item) => (
-                <li key={item} className="flex gap-3 items-start">
+                <li key={item.title} className="flex gap-3 items-start">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 text-brand-sage shrink-0" />
-                  <span className="text-brand-dark/80">{item}</span>
+                  <span className="text-brand-dark/80">
+                    <span className="font-semibold text-brand-dark">{item.title}:</span>{' '}
+                    {item.body}
+                  </span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-brand-dark/75 leading-relaxed max-w-[560px] mb-7">
-              Join a structured prep space designed for busy parents — learn the
-              strategy, practice confidently, and get answers when you need them.
+            <p className="text-brand-dark/75 leading-relaxed max-w-[640px] mb-7">
+              We’ve distilled years of elite mentorship into a structured, high-yield workspace.
+              Designed for parents who value strategy over guesswork, our portal provides the
+              tools to ensure your child navigates the pathway with absolute confidence.
             </p>
 
             <Button asChild size="lg" className="h-12 rounded-full px-7">
-              <Link to="/auth/sign-up">Sign Up for Free →</Link>
+              <Link to="/auth/sign-up">Start your journey for free</Link>
             </Button>
           </div>
 
