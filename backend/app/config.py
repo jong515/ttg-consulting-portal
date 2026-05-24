@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import structlog
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+log = structlog.get_logger(__name__)
 
 
 class Settings(BaseSettings):
@@ -17,6 +20,12 @@ class Settings(BaseSettings):
     clerk_jwks_url: str = ""
     clerk_issuer: str = ""
     clerk_audience: str = ""
+
+    # EdXP-Users (authorization)
+    edxp_authz_url: str = ""
+    edxp_org_id: str = ""
+    edxp_internal_jwt_secret: str = ""
+    edxp_service_name: str = "ttg-portal"
 
     # App
     frontend_url: str = "http://localhost:5173"
@@ -35,3 +44,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+log.info("settings loaded", environment=settings.environment, version=settings.app_version)

@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 
 from app.config import settings
 from app.middleware.logging import LoggingMiddleware, configure_logging
-from app.routers import dev_storage, health, storage
+from app.routers import dev_authz, dev_storage, health, resources, storage
 from app.services.supabase import get_client
 
 
@@ -36,6 +36,22 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     else:
         logger.warning("Supabase credentials not configured — skipping client init")
 
+    if not settings.is_development:
+        missing: list[str] = []
+        if not settings.supabase_url.strip():
+            missing.append("SUPABASE_URL")
+        if not settings.supabase_service_key.strip():
+            missing.append("SUPABASE_SERVICE_KEY")
+        if not settings.clerk_jwks_url.strip():
+            missing.append("CLERK_JWKS_URL")
+        if not settings.clerk_issuer.strip():
+            missing.append("CLERK_ISSUER")
+        if missing:
+            logger.warning(
+                "Production storage/auth may be incomplete (paid downloads need Supabase + Clerk)",
+                missing_keys=missing,
+            )
+
     logger.info("Application started", version=settings.app_version, env=settings.environment)
     yield
     logger.info("Application shutting down")
@@ -59,9 +75,11 @@ app.add_middleware(
 app.add_middleware(LoggingMiddleware)
 
 app.include_router(health.router, prefix="/api/v1", tags=["health"])
+app.include_router(resources.router, prefix="/api/v1", tags=["resources"])
 app.include_router(storage.router, prefix="/api/v1", tags=["storage"])
 if settings.is_development:
     app.include_router(dev_storage.router, prefix="/api/v1", tags=["dev"])
+    app.include_router(dev_authz.router, prefix="/api/v1", tags=["dev"])
 
 
 @app.get("/", include_in_schema=False)
