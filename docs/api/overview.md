@@ -187,6 +187,17 @@ GET    /api/v1/storage/paid-download    # Paid bucket: stream bytes (Clerk JWT)
 
 In **development** only, equivalent **`/api/v1/dev/storage/...`** helpers may be registered for smoke tests.
 
+### Resources (implemented)
+
+Course catalog rows (videos, PDFs, articles) are stored in Supabase `resources` when configured; the API falls back to in-memory seeds when the table is empty.
+
+```
+GET    /api/v1/resources                # List catalog (Clerk JWT)
+GET    /api/v1/resources/progress       # Demo progress (Clerk JWT)
+```
+
+Video rows include `muxPlaybackId` and `muxPlaybackSigned` after Mux sync. PDF rows include `bucket` and `filePath` for Supabase Storage.
+
 ### Playback (Mux Video; implemented)
 
 Course videos are delivered via **Mux** (transcoded + CDN). **PDFs** remain in Supabase Storage (`resources-public` / `resources-paid`) using the routes above.
@@ -202,7 +213,15 @@ GET    /api/v1/playback/mux-token       # Mint Mux Video playback JWT (Clerk JWT
 
 **Responses**: `200` with `{ "data": { "token": "...", "expiresAt": 1735689600 }, "error": null }` (camelCase JSON). Returns `400` if the resource is not a signed Mux video, `404` if unknown or not provisioned, `503` if signing keys are not configured on the server.
 
-Configure **`MUX_SIGNING_KEY_ID`** and **`MUX_SIGNING_PRIVATE_KEY`** (Mux dashboard → Signing Keys; private key as PEM or base64 PEM). **`MUX_PUBLIC_PLAYBACK_ID`**: your **public** playback ID for **Course 1** free videos (`dsa-pathways`, `timelines-deadlines`); if unset, a Mux sample ID is used in development. Optional **`MUX_SEED_SIGNED_PLAYBACK_ID`**: your **signed** playback ID — when set, the demo `/resources` catalog includes paid **Course 2** sample `res-009` for local testing.
+Configure **`MUX_TOKEN_ID`** and **`MUX_TOKEN_SECRET`** (Mux dashboard → Settings → API Access Tokens) to sync playback IDs from Mux assets into the Supabase `resources` table:
+
+```bash
+cd backend && python -m app.scripts.sync_mux
+```
+
+When uploading videos in Mux, set **Passthrough** to the portal resource id (e.g. `res-001`). Public catalog videos need a **public** playback policy; paid videos need **signed**.
+
+Configure **`MUX_SIGNING_KEY_ID`** and **`MUX_SIGNING_PRIVATE_KEY`** (Mux dashboard → Signing Keys; private key as PEM or base64 PEM) for signed playback JWTs.
 
 ### Health
 

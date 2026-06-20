@@ -8,7 +8,7 @@ from pydantic.alias_generators import to_camel
 from app.config import settings
 from app.dependencies import get_current_user
 from app.models.schemas import ApiResponse, ClerkUser
-from app.routers.resources import find_demo_resource
+from app.routers.resources import find_resource
 from app.services.mux_playback_token import mint_mux_video_playback_token
 
 logger = structlog.get_logger()
@@ -34,7 +34,7 @@ async def mux_playback_token(
 
     Public playback IDs do not need a token; use Mux Player with `playbackId` only.
     """
-    resource = find_demo_resource(resource_id)
+    resource = find_resource(resource_id)
     if not resource:
         raise HTTPException(status_code=404, detail="Resource not found")
 

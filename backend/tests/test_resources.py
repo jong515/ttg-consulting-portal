@@ -15,7 +15,7 @@ async def test_list_resources_requires_auth(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_list_resources_returns_demo_catalog(client: AsyncClient) -> None:
+async def test_list_resources_returns_seed_catalog(client: AsyncClient) -> None:
     async def _user() -> ClerkUser:
         return ClerkUser(clerk_id="user_test", email="parent@example.com")
 
@@ -32,11 +32,11 @@ async def test_list_resources_returns_demo_catalog(client: AsyncClient) -> None:
     body = response.json()
     assert body["error"] is None
     assert isinstance(body["data"], list)
-    assert len(body["data"]) == 7
+    assert len(body["data"]) == 8
     first = body["data"][0]
     assert first["id"] == "res-001"
     assert first["title"] == "DSA pathways overview"
-    assert first.get("muxPlaybackId")
+    assert not first.get("muxPlaybackId")
     assert first.get("muxPlaybackSigned") is False
     assert "createdAt" in first
     assert "filePath" not in first or first.get("filePath") is None
@@ -60,6 +60,6 @@ async def test_list_progress_scopes_user_id(client: AsyncClient) -> None:
     body = response.json()
     assert body["error"] is None
     rows = body["data"]
-    assert len(rows) == 7
+    assert len(rows) == 8
     assert all(r["userId"] == "clerk_abc" for r in rows)
     assert rows[0]["resourceId"] == "res-001"

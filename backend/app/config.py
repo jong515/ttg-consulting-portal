@@ -10,7 +10,11 @@ class Settings(BaseSettings):
     # Prefer `.env.local` for dev while keeping `.env` as a fallback.
     # This matches the frontend convention and prevents "credentials not configured"
     # when developers only populate `.env.local`.
-    model_config = SettingsConfigDict(env_file=(".env.local", ".env"), env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=(".env.local", ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     # Supabase — validated at usage time so the server starts without credentials
     supabase_url: str = ""
@@ -38,16 +42,12 @@ class Settings(BaseSettings):
     allow_dev_bearer_auth: bool = False
     dev_bearer_token: str = ""
 
-    # Mux Video — signing key mints short-lived JWTs for **signed** playback IDs only.
-    # Create keys in the Mux dashboard (Settings → Signing Keys). Private key may be PEM
-    # or base64-encoded PEM as returned by the API.
+    # Mux Video — API token for asset sync; signing key mints JWTs for signed playback IDs.
+    # Create API access tokens and signing keys in the Mux dashboard.
+    mux_token_id: str = ""
+    mux_token_secret: str = ""
     mux_signing_key_id: str = ""
     mux_signing_private_key: str = ""
-    # Public playback ID for **Course 1** (free) catalog videos — topics dsa-pathways &
-    # timelines-deadlines. If unset, a Mux sample asset is used for local dev only.
-    mux_public_playback_id: str = ""
-    # Signed playback ID for **Course 2** paid catalog video (res-009) when set.
-    mux_seed_signed_playback_id: str = ""
 
     @property
     def is_development(self) -> bool:

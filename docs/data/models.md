@@ -112,7 +112,39 @@ CREATE INDEX idx_videos_uploaded_by ON videos(uploaded_by_id);
 
 ---
 
-### Content
+### Resources (catalog)
+
+Portal course catalog — videos (Mux), PDFs (Supabase Storage paths), and articles.
+
+```sql
+CREATE TABLE resources (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('video', 'pdf', 'article', 'module')),
+  topic TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  duration TEXT NOT NULL DEFAULT '',
+  access TEXT NOT NULL DEFAULT 'public' CHECK (access IN ('public', 'paid')),
+  bucket TEXT,
+  file_path TEXT,
+  thumbnail_url TEXT,
+  content_url TEXT,
+  mux_asset_id TEXT,
+  mux_playback_id TEXT,
+  mux_playback_signed BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+Migration reference (optional if table already exists): [`supabase/migrations/20260322000000_resources.sql`](../../supabase/migrations/20260322000000_resources.sql).
+
+**PDF files** live in Supabase Storage, not in this table’s rows as blobs — each PDF resource stores `bucket` + `file_path` pointing at the object:
+
+- Course 1: `resources-public` / `course-1/...`
+- Course 2: `resources-paid` / `course-2/...`
+
+### Content (legacy doc schema)
 
 Represents DSA resources (videos, articles, downloads) — both free and paid.
 
@@ -165,7 +197,7 @@ CREATE INDEX idx_uca_content ON user_content_access(content_id);
 | `student-videos` | MapleBear student recordings | Signed URLs, consultant upload, parent read |
 | `public-assets` | Marketing / About page images | Public read |
 
-**Course videos (DSA / interview modules)** use **Mux Video**, not Supabase object storage: the catalog stores a **Mux playback ID** and whether playback is **public** or **signed** (JWT minted by `GET /api/v1/playback/mux-token`). In the demo catalog, **public** IDs apply to **Course 1** topics only; the optional paid **Course 2** video uses a **signed** ID. See [API overview](../api/overview.md) and [Mux secure playback](https://www.mux.com/docs/guides/secure-video-playback).
+**Course videos (DSA / interview modules)** use **Mux Video**, not Supabase object storage: each `resources` row stores a **Mux playback ID** and whether playback is **public** or **signed** (JWT minted by `GET /api/v1/playback/mux-token`). Playback IDs are synced from Mux via `python -m app.scripts.sync_mux` (set asset **Passthrough** to the resource id). **PDFs** use `bucket` + `file_path` pointing at Supabase Storage. See [API overview](../api/overview.md) and [Mux secure playback](https://www.mux.com/docs/guides/secure-video-playback).
 
 ---
 

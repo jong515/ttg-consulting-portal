@@ -58,11 +58,6 @@ VITE_API_BASE_URL=http://localhost:8000/api/v1
 # {VITE_SUPABASE_URL}/storage/v1/object/public/{bucket}/{path} for public buckets (dashboard PDFs, About page photos in public-assets, etc.).
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 
-# Optional: match backend MUX_PUBLIC_PLAYBACK_ID for Course 1 mock videos.
-# VITE_MUX_PUBLIC_PLAYBACK_ID=
-# Optional: match backend MUX_SEED_SIGNED_PLAYBACK_ID for paid Course 2 mock video res-009.
-# VITE_MUX_SEED_SIGNED_PLAYBACK_ID=
-
 # Optional: Mux Data environment key when required by your Mux project (often unset for defaults).
 # VITE_MUX_ENV_KEY=
 ```
@@ -78,19 +73,35 @@ pip install -e ".[dev]"
 cp .env.example .env
 ```
 
-Edit `.env` using [`backend/.env.example`](../../backend/.env.example) (Supabase, Clerk JWKS/issuer, `FRONTEND_URL`, **Mux signing keys** for paid video tokens, optional `MUX_SEED_SIGNED_PLAYBACK_ID`, etc.).
+Edit `.env` using [`backend/.env.example`](../../backend/.env.example) (Supabase, Clerk JWKS/issuer, `FRONTEND_URL`, **Mux API token** for playback sync, **Mux signing keys** for paid video tokens, etc.).
 
 ### 5. Database Setup
+
+If your Supabase project **already has** a `resources` table, skip the migration step. The API reads catalog rows from that table when `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` are set.
+
+**PDF storage layout** (objects in Supabase Storage, referenced by `bucket` + `file_path` on each PDF row):
+
+| Course | Bucket | Object key prefix |
+|--------|--------|-------------------|
+| Course 1 (free) | `resources-public` | `course-1/...` |
+| Course 2 (paid) | `resources-paid` | `course-2/...` |
+
+Example PDF row: `bucket = resources-public`, `file_path = course-1/pdf/your-file.pdf`.
+
+**Videos** use Mux (not Storage buckets). After uploading to Mux with **Passthrough** = resource id, sync playback IDs:
+
+```bash
+cd backend && python -m app.scripts.sync_mux
+```
+
+**Fresh projects only** — apply the reference migration if the `resources` table does not exist yet:
 
 ```bash
 # Link to your Supabase project
 supabase link --project-ref your-project-ref
 
-# Run migrations
+# Optional: only when the table is missing
 supabase db push
-
-# (Optional) Seed development data — when a seed script exists
-# python scripts/seed.py
 ```
 
 ### 6. Start Development
