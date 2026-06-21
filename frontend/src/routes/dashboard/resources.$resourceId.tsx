@@ -3,8 +3,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
 import { usePortalAuth } from '@/auth/auth-context';
+import { MuxPublicPlayer } from '@/components/mux/mux-public-player';
 import { Button } from '@/components/ui/button';
 import { apiFetchBlob, getMuxPlaybackToken, getPublicStorageUrl } from '@/lib/api';
+import { muxEnvKey } from '@/lib/mux';
 import { useResources } from '@/hooks/use-resources';
 import { getCourseIdForTopic } from '@/lib/courses';
 
@@ -116,7 +118,7 @@ function ResourceDetailPage() {
     return base ? `${base}${path}` : null;
   }, [resource]);
 
-  const muxEnvKey = import.meta.env.VITE_MUX_ENV_KEY?.trim() || undefined;
+  const muxEnvKeyValue = muxEnvKey();
 
   if (!resource) {
     return (
@@ -219,7 +221,7 @@ function ResourceDetailPage() {
                 playbackId={resource.muxPlaybackId}
                 tokens={{ playback: playbackJwt }}
                 metadataVideoTitle={resource.title}
-                {...(muxEnvKey ? { envKey: muxEnvKey } : {})}
+                {...(muxEnvKeyValue ? { envKey: muxEnvKeyValue } : {})}
                 playsInline
                 onError={() => {
                   void queryClient.invalidateQueries({
@@ -231,14 +233,11 @@ function ResourceDetailPage() {
           </div>
         )}
 
-        {videoReadyPublic && (
+        {videoReadyPublic && resource.muxPlaybackId && (
           <div className="overflow-hidden rounded-xl border border-border bg-card">
-            <MuxPlayer
-              className="aspect-video w-full"
+            <MuxPublicPlayer
               playbackId={resource.muxPlaybackId}
-              metadataVideoTitle={resource.title}
-              {...(muxEnvKey ? { envKey: muxEnvKey } : {})}
-              playsInline
+              title={resource.title}
             />
           </div>
         )}

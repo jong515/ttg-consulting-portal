@@ -94,6 +94,8 @@ Example PDF row: `bucket = resources-public`, `file_path = course-1/pdf/your-fil
 cd backend && python -m app.scripts.sync_mux
 ```
 
+Portal course previews on `/portal` are Supabase video rows whose titles start with `[PREV] TTA H DSA`; `GET /api/v1/portal/course-previews` (no auth) returns the first three with public Mux playback IDs.
+
 **Fresh projects only** — apply the reference migration if the `resources` table does not exist yet:
 
 ```bash

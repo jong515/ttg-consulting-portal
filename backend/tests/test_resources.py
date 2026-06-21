@@ -32,7 +32,7 @@ async def test_list_resources_returns_seed_catalog(client: AsyncClient) -> None:
     body = response.json()
     assert body["error"] is None
     assert isinstance(body["data"], list)
-    assert len(body["data"]) == 8
+    assert len(body["data"]) == 14
     first = body["data"][0]
     assert first["id"] == "res-001"
     assert first["title"] == "DSA pathways overview"
