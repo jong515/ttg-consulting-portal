@@ -17,7 +17,7 @@ export function SiteBrandMark({ sizeClass = 'size-9', framed = true }: SiteBrand
         <img
           src={SITE_LOGO_URL}
           alt="Beyond Grades"
-          className={`shrink-0 object-contain group-hover:opacity-80 transition-opacity ${sizeClass}`}
+          className={`block shrink-0 object-contain object-left group-hover:opacity-80 transition-opacity ${sizeClass}`}
           decoding="async"
           height={64}
         />

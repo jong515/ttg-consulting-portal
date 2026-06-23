@@ -31,9 +31,12 @@ export function Navbar() {
         scrolled ? 'border-b border-brand-grey' : 'border-b border-transparent',
       ].join(' ')}
     >
-      <div className="mx-auto max-w-[1200px] flex items-center justify-between px-6 h-20">
-        <Link to="/" className="flex items-center group py-5 px-4 -ml-4">
-          <SiteBrandMark framed={false} sizeClass="h-16 w-52" />
+      <div className="mx-auto max-w-[1200px] flex items-center justify-between px-4 md:pl-0 md:pr-6 h-20">
+        <Link to="/" className="group flex shrink-0 flex-col items-start justify-center gap-0 py-2">
+          <SiteBrandMark framed={false} sizeClass="h-14 w-auto sm:h-16" />
+          <span className="-mt-0.5 text-[10px] font-medium leading-none tracking-wide text-brand-dark/55 sm:text-xs">
+            Part of Think Teach Group
+          </span>
           <span className="sr-only">Beyond Grades</span>
         </Link>
 

@@ -107,13 +107,10 @@ export function MeetTheTeamSection() {
       <div className="mx-auto max-w-[1200px] px-6">
         <h2
           id="meet-the-team-heading"
-          className="text-center text-3xl font-bold tracking-tight text-brand-dark md:text-[2rem] md:leading-tight"
+          className="text-center text-2xl font-bold tracking-tight text-brand-dark md:text-[1.75rem] md:leading-tight"
         >
-          About Us
-        </h2>
-        <h3 className="mt-4 text-center text-2xl font-bold tracking-tight text-brand-dark md:text-[1.75rem]">
           We Built This Because We Saw What Was Missing From the Inside.
-        </h3>
+        </h2>
         <div className="mx-auto mt-4 max-w-4xl space-y-4 text-center text-base leading-relaxed text-brand-dark/75">
           <p>
             We spent years navigating the corridors of global banks, law firms, hospitals, and
